@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#3F51B5</color>
+    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorAccent">#FF4081</color>
+    <color name="platformBg">#15283c</color>
+    <color name="platformMidBg">#3f5067</color>
+    <color name="platformShimBg">#526781</color>
+
+    <color name="rowBg">#ebedef</color>
+    <color name="storeMenuBg">#c42400</color>
+    <color name="tabIndicatorColor">#ffcc33</color>
+    <color name="contactUsBg">#fff7e5</color>
+    <color name="blueButton">#134486</color>
+    <color name="store_app_text_color">#3e5065</color>
+    <color name="store_app_bg_color">#cccccc</color>
+    <color name="details_app_bg_color">#ff5b00</color>
+    <color name="search_bg_color">#4e627e</color>
+    <color name="grey">#bfbfbf</color>
+    <color name="white">#fff</color>
+    <color name="black">#000000</color>
+    <color name="link_blue">#4d94ff</color>
+    <color name="edit_profile_btn">#44ddff</color>
+    <color name="darkRed">#cc0000</color>
+    <color name="colordarkRed">#cc0000</color>
+    <color name="colordarkGreen">#00cc00</color>
+    <color name="mcam_color_light">#FAFAFA</color>
+    <color name="mcam_color_dark">#424242</color>
+    <color name="disabled_login_button">#354b67</color>
+    <color name="transparent">#00000000</color>
+    <color name="transparentblack">#aa000000</color>
+    <color name="gl_black">#333333</color>
+</resources>

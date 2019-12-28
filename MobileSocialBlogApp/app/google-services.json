@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "326280143616",
+    "firebase_url": "https://ainsignestarter.firebaseio.com",
+    "project_id": "ainsignestarter",
+    "storage_bucket": "ainsignestarter.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:326280143616:android:01bdd582e17718272549e5",
+        "android_client_info": {
+          "package_name": "com.ainsigne.mobilesocialblogapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "326280143616-d27c1ogm48dlp6eolun7gps1davqb0td.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC2zPZuLCTceyv0UT-_L2EGkUHMc6jwBrk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "326280143616-d27c1ogm48dlp6eolun7gps1davqb0td.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "326280143616-ecdplvp197g0robfso54hhtqh6kprmo0.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.ainsigne.mobilesocialblogapp"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+
+    tools:context=".ui.feed.FeedFragment">
+
+
+
+    <ImageView
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:id="@+id/iv_feed_photo"
+        android:layout_margin="@dimen/padding_feed"
+        android:layout_width="32dp"
+        android:layout_height="32dp"/>
+    <TextView
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toRightOf="@id/iv_feed_photo"
+        android:id="@+id/tv_feed_username"
+        android:layout_margin="@dimen/padding_feed"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+    <androidx.recyclerview.widget.RecyclerView
+        app:layout_constraintTop_toBottomOf="@id/btn_share_thoughts"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:id="@+id/rv_feed"
+        android:layout_width="match_parent"
+        android:layout_height="0dp" />
+    <LinearLayout
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:orientation="vertical"
+        android:background="@color/white"
+        android:id="@+id/container_sendpost"
+        android:layout_margin="@dimen/activity_horizontal_margin"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+        <EditText
+            android:id="@+id/et_feedtitle"
+            android:hint="Title here"
+            android:layout_margin="@dimen/padding_feed"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+        <EditText
+            android:id="@+id/et_feedmessage"
+            android:hint="Post message here"
+            android:layout_margin="@dimen/padding_feed"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+        <ImageView
+            android:id="@+id/iv_photoupload"
+            android:layout_margin="@dimen/padding_mini"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@mipmap/ic_launcher"/>
+        <Button
+            android:id="@+id/btn_sendpost"
+            android:text="Send post"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+    <Button
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:id="@+id/btn_share_thoughts"
+        android:text="Share your thoughts"
+        android:layout_margin="@dimen/padding_feed"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+</androidx.constraintlayout.widget.ConstraintLayout>
