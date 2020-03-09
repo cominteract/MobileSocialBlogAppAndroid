@@ -328,6 +328,7 @@ class FirebaseAPIManager : APIManager() {
                 if(snapshots.value != null && snapshots.value is HashMap<*,*>){
                     usersRetrieved.retrievedUsers(Conversions.convertToAllUsers(((snapshots.value as HashMap<String,Any>))),"")
                     Log.d(" User count ", " count ${(snapshots.value as HashMap<*,*>).keys.size}")
+
                 }else {
                     usersRetrieved.retrievedUsers(ArrayList<Users>(),"")
                 }

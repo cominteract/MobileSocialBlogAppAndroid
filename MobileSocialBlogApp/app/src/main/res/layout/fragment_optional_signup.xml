@@ -9,11 +9,13 @@
 
     <EditText
         android:layout_margin="@dimen/padding_feed"
+        android:hint="Birthday"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/et_optional_birthday" />
     <EditText
         android:layout_margin="@dimen/padding_feed"
+        android:hint="Address"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/et_optional_location" />

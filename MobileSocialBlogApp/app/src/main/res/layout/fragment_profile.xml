@@ -6,124 +6,189 @@
     android:padding="@dimen/padding_feed"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".ui.profile.ProfileFragment">
-    <Button
-        android:text="Logout"
-        android:id="@+id/btn_profile_logout"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-    />
-    <Button
-        android:text="Friends"
-        android:minWidth="0dp"
-        android:id="@+id/btn_profile_friends"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintRight_toLeftOf="@id/btn_profile_posts"
-        />
-    <Button
-        android:text="Posts"
-        android:minWidth="0dp"
-        android:id="@+id/btn_profile_posts"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintRight_toLeftOf="@id/btn_profile_chat"
-        />
-    <Button
-        android:minWidth="0dp"
-        android:text="Chat"
-        android:id="@+id/btn_profile_chat"
-        android:layout_width="wrap_content"
-        android:visibility="gone"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        />
-    <ImageView
-        android:layout_width="32dp"
-        android:layout_height="32dp"
+    <RelativeLayout
         android:layout_margin="@dimen/padding_mini"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/btn_profile_logout"
-        android:id="@+id/iv_profile_photo" />
+        app:layout_constraintTop_toTopOf="parent"
+        android:id="@+id/profile_container"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <ImageView
+            android:layout_alignParentStart="true"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_margin="@dimen/padding_mini"
+            android:background="@color/grey"
+            android:id="@+id/iv_profile_photo" />
 
-    <Button
-        app:layout_constraintBottom_toBottomOf="@id/iv_profile_photo"
-        app:layout_constraintLeft_toRightOf="@id/iv_profile_photo"
-        android:id="@+id/btn_profile_update"
-        android:text="Update"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
 
+        <Button
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:text="Posts"
+            android:minWidth="0dp"
+
+            android:id="@+id/btn_profile_posts"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            />
+        <Button
+            android:layout_toLeftOf="@id/btn_profile_posts"
+            android:text="Friends"
+            android:minWidth="0dp"
+            android:id="@+id/btn_profile_friends"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            />
+        <Button
+            android:layout_toLeftOf="@id/btn_profile_friends"
+            android:minWidth="0dp"
+            android:text="Chat"
+            android:id="@+id/btn_profile_chat"
+            android:layout_width="wrap_content"
+            android:visibility="gone"
+            android:layout_height="wrap_content"
+            />
+    </RelativeLayout>
     <LinearLayout
-        app:layout_constraintTop_toBottomOf="@id/iv_profile_photo"
+        app:layout_constraintTop_toBottomOf="@id/profile_container"
         app:layout_constraintLeft_toLeftOf="parent"
-        android:visibility="gone"
+        android:visibility="invisible"
         android:id="@+id/container_profile_et"
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" >
-        <EditText
-            android:layout_margin="@dimen/padding_mini"
-            android:hint="first name here"
+        <LinearLayout
+            android:orientation="horizontal"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/et_profile_firstname"/>
-        <EditText
-            android:layout_margin="@dimen/padding_mini"
-            android:hint="last name here"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/et_profile_lastname"/>
+            android:layout_height="match_parent"
+            android:weightSum="1">
+            <EditText
+                android:layout_margin="@dimen/padding_mini"
+                android:hint="first name here"
+                android:layout_weight=".5"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:id="@+id/et_profile_firstname"/>
+            <EditText
+                android:layout_margin="@dimen/padding_mini"
+                android:hint="last name here"
+                android:layout_weight=".5"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:id="@+id/et_profile_lastname"/>
+        </LinearLayout>
+
         <EditText
             android:layout_margin="@dimen/padding_mini"
             android:hint="location here"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/et_profile_location"/>
-        <EditText
-            android:layout_margin="@dimen/padding_mini"
-            android:hint="birthday here"
+        <LinearLayout
+            android:weightSum="1"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/et_profile_birthday"/>
+            android:layout_height="wrap_content" >
+            <EditText
+                android:layout_margin="@dimen/padding_mini"
+                android:hint="birthday here"
+                android:layout_weight=".55"
+                android:layout_width="0dp"
+                android:layout_marginRight="@dimen/padding_feed"
+                android:layout_marginEnd="@dimen/padding_feed"
+                android:layout_height="wrap_content"
+                android:id="@+id/et_profile_birthday"/>
+            <Button
+                android:id="@+id/btn_profile_update"
+                android:text="Update"
+                android:minHeight="0dp"
+                android:minWidth="0dp"
+                android:layout_marginLeft="@dimen/padding_feed"
+                android:layout_marginStart="@dimen/padding_feed"
+                android:layout_weight=".4"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+
     </LinearLayout>
 
     <LinearLayout
-        app:layout_constraintTop_toBottomOf="@id/iv_profile_photo"
+        app:layout_constraintTop_toBottomOf="@id/profile_container"
         app:layout_constraintLeft_toLeftOf="parent"
-
         android:id="@+id/container_profile_tv"
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" >
-        <TextView
-            android:layout_margin="@dimen/padding_mini"
+        <LinearLayout
+            android:layout_marginTop="@dimen/activity_vertical_margin"
+            android:layout_marginBottom="@dimen/padding_feed"
+            android:layout_marginLeft="@dimen/padding_feed"
+            android:layout_marginStart="@dimen/padding_feed"
+            android:layout_marginRight="@dimen/padding_feed"
+            android:layout_marginEnd="@dimen/padding_feed"
+            android:orientation="horizontal"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/tv_profile_firstname"/>
+            android:layout_height="match_parent"
+            android:weightSum="1">
+            <TextView
+                android:layout_weight=".5"
+                android:layout_margin="@dimen/padding_mini"
+                android:layout_width="0dp"
+                android:textSize="@dimen/usertext_size"
+                android:layout_height="wrap_content"
+                android:id="@+id/tv_profile_firstname"/>
+            <TextView
+                android:layout_weight=".5"
+                android:layout_margin="@dimen/padding_mini"
+                android:layout_width="0dp"
+                android:textSize="@dimen/usertext_size"
+                android:layout_height="wrap_content"
+                android:id="@+id/tv_profile_lastname"/>
+        </LinearLayout>
         <TextView
-            android:layout_margin="@dimen/padding_mini"
+                android:layout_margin="@dimen/padding_feed"
+                android:textSize="@dimen/usertext_size"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/tv_profile_location"/>
+        <LinearLayout
+            android:weightSum="1"
+            android:orientation="horizontal"
+            android:layout_margin="@dimen/padding_feed"
+            android:gravity="center_vertical"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/tv_profile_lastname"/>
-        <TextView
-            android:layout_margin="@dimen/padding_mini"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/tv_profile_location"/>
-        <TextView
-            android:layout_margin="@dimen/padding_mini"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/tv_profile_birthday"/>
+            android:layout_height="wrap_content" >
+            <TextView
+
+                android:layout_margin="@dimen/padding_mini"
+                android:layout_width="0dp"
+                android:layout_weight=".55"
+                android:layout_marginRight="@dimen/padding_feed"
+                android:layout_marginEnd="@dimen/padding_feed"
+
+                android:textSize="@dimen/usertext_size"
+                android:layout_height="wrap_content"
+                android:id="@+id/tv_profile_birthday"/>
+            <Button
+                android:id="@+id/btn_profile_edit"
+                android:text="Edit"
+                android:minHeight="0dp"
+                android:minWidth="0dp"
+                android:layout_weight=".4"
+                android:layout_marginLeft="@dimen/padding_feed"
+                android:layout_marginStart="@dimen/padding_feed"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+
     </LinearLayout>
 
     <androidx.recyclerview.widget.RecyclerView
-        app:layout_constraintTop_toBottomOf="@id/container_profile_tv"
+        app:layout_constraintTop_toBottomOf="@id/container_profile_et"
         app:layout_constraintBottom_toBottomOf="parent"
         android:id="@+id/rv_profile"
         android:layout_width="match_parent"

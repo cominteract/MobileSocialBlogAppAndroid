@@ -36,21 +36,28 @@ fun Date.fromNow() : String
 {
 
     cal.time = this
-    val year = Calendar.getInstance().get(Calendar.YEAR) - cal.get(Calendar.YEAR)
-    val month = Calendar.getInstance().get(Calendar.MONTH) - cal.get(Calendar.MONTH)
-    val day = Calendar.getInstance().get(Calendar.DAY_OF_YEAR) - cal.get(Calendar.DAY_OF_YEAR)
+    var year = Calendar.getInstance().get(Calendar.YEAR) - cal.get(Calendar.YEAR)
+    var month = Calendar.getInstance().get(Calendar.MONTH) - cal.get(Calendar.MONTH)
+    if(month < 0)
+        month += 12
+
+    var day = Calendar.getInstance().get(Calendar.DAY_OF_YEAR) - cal.get(Calendar.DAY_OF_YEAR)
+    if(day < 0)
+        day += 365
     val hour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY) - cal.get(Calendar.HOUR_OF_DAY)
     val minute = Calendar.getInstance().get(Calendar.MINUTE) - cal.get(Calendar.MINUTE)
     //cal.set(Calendar.DAY_OF_MONTH, currentDay - 2)
 
-    Log.d(" Current Year ${Calendar.getInstance().get(Calendar.YEAR)}", " Sampled Year ${cal.get(Calendar.YEAR)}")
-    Log.d(" Current Day ${Calendar.getInstance().get(Calendar.DAY_OF_YEAR)}", " Sampled Day ${cal.get(Calendar.DAY_OF_YEAR)}")
-    return if(year > 0)
+    Log.d(" Current Day "," Current Day $day")
+    Log.d(" Current Month "," Current Month $month")
+    Log.d(" Current Year "," Current Year $year")
+
+    return if(month > 1 && day >= 30 && month < 12)
+        "$month mos"
+    else if(year > 0)
         "$year y"
     else if(month == 1 && day >= 30)
         "$month mo"
-    else if(month > 1 && day >= 30)
-        "$month mos"
     else if(day > 0 )
         "$day d"
     else if(hour > 0 )

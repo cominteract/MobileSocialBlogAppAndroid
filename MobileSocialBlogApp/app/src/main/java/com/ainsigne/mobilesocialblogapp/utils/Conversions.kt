@@ -1,5 +1,6 @@
 package com.ainsigne.mobilesocialblogapp.utils
 
+import android.util.Log
 import com.ainsigne.mobilesocialblogapp.models.*
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -149,9 +150,11 @@ class Conversions {
                     user.birthday = value["birthday"] as? String
                     user.username = value["username"] as? String
                     user.password = value["password"] as? String
-                    user.friendsInviteid = value["friendsInviteid"] as? ArrayList<String>
+                    user.friendsInviteid = value["friendsInviteId"] as? ArrayList<String>
                     user.friendsId = value["friendsId"] as? ArrayList<String>
                     user.friendsRequestId = value["friendsRequestId"] as? ArrayList<String>
+
+
                     user.online = value["online"] as? Boolean
                     users.add(user)
                 }

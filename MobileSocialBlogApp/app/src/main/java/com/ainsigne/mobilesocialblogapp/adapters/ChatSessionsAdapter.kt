@@ -7,6 +7,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.ainsigne.mobilesocialblogapp.R
 import com.ainsigne.mobilesocialblogapp.models.ChatSession
 import com.ainsigne.mobilesocialblogapp.ui.chat.ChatView
+import com.ainsigne.mobilesocialblogapp.utils.Config
+import com.ainsigne.mobilesocialblogapp.utils.fromNow
+import com.ainsigne.mobilesocialblogapp.utils.toDate
 import com.bumptech.glide.Glide
 import kotlinx.android.synthetic.main.adapter_chatfriend.view.*
 
@@ -38,11 +41,10 @@ class ChatSessionsAdapter(chats_ : List<ChatSession>, view_ : ChatView) : Recycl
         val feedView = feedView_
         fun bind(chat : ChatSession) {
 
-            feedView.tv_chatfriend_location.text = chat.author
-
+            feedView.tv_chatfriend_location.text = Config.user?.location
             feedView.tv_chatfriend_username.text = chat.author
 
-            feedView.tv_chatfriend_timestamp.text = chat.timestamp
+            feedView.tv_chatfriend_timestamp.text = chat.timestamp?.toDate()?.fromNow()
 
 
 

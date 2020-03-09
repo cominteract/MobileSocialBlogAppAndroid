@@ -55,9 +55,6 @@ class FeedDetailsFragment : BaseFragment(), FeedDetailsView {
     }
 
     override fun retrievedAllUpdateView() {
-
-        Log.d(" Mess up "," Mess up ${presenter?.allComments()}")
-
         presenter?.allPosts()?.filter { it.id == postId }?.let {
             post = it[0]
         }
@@ -67,7 +64,6 @@ class FeedDetailsFragment : BaseFragment(), FeedDetailsView {
 
         presenter?.allComments()?.let {comments->
             if(comments.isEmpty()){
-                Log.d(" comment retrieved "," comment retrieved ${comments.isEmpty()}")
                 doAsync {
                     uiThread {
                         val linearLayoutManager = LinearLayoutManager(it.context)
@@ -79,7 +75,6 @@ class FeedDetailsFragment : BaseFragment(), FeedDetailsView {
                 }
             }
             else{
-                Log.d(" comment retrieved "," comment retrieved ${comments.isEmpty()}")
                 comments.filter {  it.commentedTo != null && it.commentedTo!!.contains(postId) }?.let{ filtered ->
                     doAsync {
                         uiThread {
@@ -159,6 +154,8 @@ class FeedDetailsFragment : BaseFragment(), FeedDetailsView {
             comment.upvotes = 0
             comment.timestamp = Date().toStringFormat()
             presenter?.sendComment(comment)
+            isCommenting = !isCommenting
+            toggleCommenting()
         }
         presenter?.retrieveAll()
     }

@@ -6,6 +6,12 @@ import com.ainsigne.mobilesocialblogapp.manager.AuthManager
 import com.ainsigne.mobilesocialblogapp.models.ChatMessages
 import com.ainsigne.mobilesocialblogapp.models.ChatSession
 import com.ainsigne.mobilesocialblogapp.models.Users
+import com.ainsigne.mobilesocialblogapp.utils.Constants
+import com.ainsigne.mobilesocialblogapp.utils.fromNow
+import com.ainsigne.mobilesocialblogapp.utils.toStringFormat
+import kotlinx.android.synthetic.main.fragment_chat_session.*
+import java.util.*
+import kotlin.collections.ArrayList
 
 
 /**
@@ -34,6 +40,7 @@ interface ChatSessionContract {
 interface ChatSessionPresenter {
     fun allChats() : List<ChatMessages>?
     fun allSessions() : List<ChatSession>?
+    fun sendChatWithSession(user : Users, chats : List<ChatMessages>, chatId : String, message : String)
     fun sendChat(chat : ChatMessages)
     fun sendSession(chat : ChatSession)
     fun retrieveAll()
@@ -66,6 +73,45 @@ class ChatSessionPresenterImplementation(
 
     override fun allSessions(): List<ChatSession>? {
         return service.allSessions?.toList()
+    }
+
+    override fun sendChatWithSession(
+        user: Users,
+        chats: List<ChatMessages>,
+        chatId: String,
+        message: String
+    ) {
+        val chat = ChatMessages()
+        chat.id = Constants.getRandomString(22)
+        chat.author = user.username
+        chat.userId = user.id
+        chat.timestamp = Date().toStringFormat()
+        chat.message = message
+        chat.replyTo = chatId
+        chat.timestamp_from = Date().fromNow()
+        chat.msgId = chats.size
+
+        sendChat(chat)
+        var session = ChatSession()
+        user.id?.let {id->
+            allSessions()?.filter { it.userIds != null && it.userIds!!.contains(id) && it.userIds!!.contains(chatId) }?.let {filtered->
+                if(filtered.isNotEmpty())
+                    session = filtered[0]
+            }
+        }
+        if(session.id == null){
+            session.id = Constants.getRandomString(22)
+            session.userIds = ArrayList()
+            user.id?.let {id->
+                session.userIds?.add(id)
+                session.userIds?.add(chatId)
+            }
+
+        }
+        session.message = message
+        session.author = user.username
+        session.timestamp = Date().toStringFormat()
+        sendSession(session)
     }
 
     override fun sendChat(chat: ChatMessages) {

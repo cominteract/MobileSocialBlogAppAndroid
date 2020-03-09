@@ -80,27 +80,5 @@ class DiscoverServices(
         })
     }
 
-    fun addUser(photoUrl : String?, friendsId: String?, userId: String?) {
-        var aUser = Users()
-        allUsers?.let { users ->
-            if (friendsId != null && userId != null && !users.filter { it.id == userId }.isNullOrEmpty()) {
-                aUser = users.filter { it.id == userId }[0]
-                if (!users.filter { it.id == friendsId }.isNullOrEmpty()) {
-                    val bUser = users.filter { it.id == friendsId }[0]
-                    if (aUser.friendsId == null)
-                        aUser.friendsId = ArrayList()
-                    if (bUser.friendsId == null)
-                        bUser.friendsId = ArrayList()
-                    bUser.id?.let {
-                        aUser.friendsId!!.add(it)
-                    }
-                    aUser.id?.let {
-                        bUser.friendsId!!.add(it)
-                    }
-                    addUserToApi(aUser, false)
-                    addUserToApi(bUser, false)
-                }
-            }
-        }
-    }
+
 }

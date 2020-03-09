@@ -86,7 +86,6 @@ class SignupServices(
 
 
     fun retrieveAllUsers(){
-        Log.d(" User count ", " count null")
         val usersRetrieved = object : UsersRetrieved {
             override fun retrievedUsers(users: ArrayList<Users>?, msg: String) {
                 allUsers = users

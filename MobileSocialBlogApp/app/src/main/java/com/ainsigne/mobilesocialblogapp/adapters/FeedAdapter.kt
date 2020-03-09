@@ -8,6 +8,9 @@ import com.ainsigne.mobilesocialblogapp.R
 import com.ainsigne.mobilesocialblogapp.models.Posts
 import com.ainsigne.mobilesocialblogapp.ui.feed.FeedView
 import com.ainsigne.mobilesocialblogapp.ui.profile.ProfileView
+import com.ainsigne.mobilesocialblogapp.utils.fromNow
+import com.ainsigne.mobilesocialblogapp.utils.hoursFromNow
+import com.ainsigne.mobilesocialblogapp.utils.toDate
 import com.bumptech.glide.Glide
 import kotlinx.android.synthetic.main.adapter_feed.view.*
 
@@ -43,8 +46,10 @@ class FeedAdapter(posts_ : List<Posts>, view_ : FeedView?, pview_ : ProfileView?
             feedView.tv_feed_title.text = post.title
             feedView.tv_user_name.text = post.author
             feedView.tv_body.text = post.body
-            feedView.tv_timestamp.text = post.timestamp
-            feedView.tv_num_upvotes.text = post.upvotes.toString()
+            feedView.tv_timestamp.text = post.timestamp?.toDate()?.fromNow()
+
+            val votes = post.upvotes - post.downvotes
+            feedView.tv_num_upvotes.text = votes.toString()
             Glide.with(feedView.context).load(post.url).into(feedView.iv_feed_display_image)
 
             adapterView?.let {feed ->

@@ -45,27 +45,29 @@ class DiscoverAdapter(users_ : List<Users>, view_ : DiscoverView) : RecyclerView
             feedView.tv_discover_username.text = user.username
             Glide.with(feedView.context).load(user.photoUrl).into(feedView.iv_discover_icon)
             feedView.btn_discover_remove.visibility = View.GONE
-            if(adapterView.isAlreadyFriend(user))
-                feedView.btn_discover_addfriend.text = "Friends"
-            else if(adapterView.isAlreadyInvited(user)){
-                feedView.btn_discover_addfriend.text = "Accept"
-                feedView.btn_discover_addfriend.setOnClickListener {
-                    adapterView.acceptFriendClicked(user)
+            when {
+                adapterView.isAlreadyFriend(user) -> feedView.btn_discover_addfriend.text = "Friends"
+                adapterView.isAlreadyInvited(user) -> {
+                    feedView.btn_discover_addfriend.text = "Accept"
+                    feedView.btn_discover_addfriend.setOnClickListener {
+                        adapterView.acceptFriendClicked(user)
+                    }
+                    feedView.btn_discover_remove.setOnClickListener {
+                        adapterView.cancelFriendClicked(user)
+                    }
+                    feedView.btn_discover_remove.visibility = View.VISIBLE
                 }
-                feedView.btn_discover_remove.setOnClickListener {
-                    adapterView.cancelFriendClicked(user)
+                adapterView.isAlreadyRequested(user) -> {
+                    feedView.btn_discover_addfriend.text = "Cancel"
+                    feedView.btn_discover_addfriend.setOnClickListener {
+                        adapterView.cancelFriendClicked(user)
+                    }
                 }
-                feedView.btn_discover_remove.visibility = View.VISIBLE
-            }else if(adapterView.isAlreadyRequested(user)){
-                feedView.btn_discover_addfriend.text = "Cancel"
-                feedView.btn_discover_addfriend.setOnClickListener {
-                    adapterView.cancelFriendClicked(user)
-                }
-            }
-            else{
-                feedView.btn_discover_addfriend.text = "Add Friend"
-                feedView.btn_discover_addfriend.setOnClickListener {
-                    adapterView.addFriendClicked(user)
+                else -> {
+                    feedView.btn_discover_addfriend.text = "Add Friend"
+                    feedView.btn_discover_addfriend.setOnClickListener {
+                        adapterView.addFriendClicked(user)
+                    }
                 }
             }
 

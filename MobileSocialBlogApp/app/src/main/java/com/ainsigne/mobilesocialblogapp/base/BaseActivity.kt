@@ -2,12 +2,13 @@ package com.ainsigne.mobilesocialblogapp.base
 
 
 import android.os.Bundle
-
-import com.ainsigne.mobilesocialblogapp.R
-import android.view.View
+import android.view.Menu
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.view.menu.MenuBuilder
 import androidx.fragment.app.FragmentTransaction
+import com.ainsigne.mobilesocialblogapp.R
 import com.ainsigne.mobilesocialblogapp.utils.UINavigation
+import kotlinx.android.synthetic.main.activity_main.*
 
 
 /**
@@ -81,6 +82,7 @@ open class BaseActivity : AppCompatActivity() {
         }
         return false
     }
+
 
     /**
      * addOnTop uses fragKey string to navigate

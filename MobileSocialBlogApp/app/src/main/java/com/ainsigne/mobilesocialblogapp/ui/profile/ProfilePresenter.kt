@@ -23,6 +23,7 @@ interface ProfileView {
     fun downvotePost(post : Posts)
     fun navigateToPost(post: Posts)
     fun navigateToProfile(username: String)
+
 }
 
 /**
@@ -51,6 +52,8 @@ interface ProfilePresenter {
     fun downloadImage(username : String)
     fun uploadImage(data : String)
     fun commentsFromPost(postId : String) : List<Comments>?
+    fun upvotePost(post: Posts, id : String)
+    fun downvotePost(post : Posts, id : String)
 }
 
 
@@ -128,6 +131,44 @@ class ProfilePresenterImplementation(
     override fun commentsFromPost(postId: String): List<Comments>? {
         return commentsFromPost(postId)
 
+    }
+
+    override fun upvotePost(post: Posts, id : String) {
+        if(post.upvotedId != null && post.upvotedId!!.contains(id)){
+            post.upvotedId = post.upvotedId!!.filter { it != id } as ArrayList<String>?
+            post.upvotes = post.upvotes - 1
+        }
+        else{
+            post.upvotes = post.upvotes + 1
+            if(post.downvotedId != null && post.downvotedId!!.contains(id)){
+                post.downvotedId = post.downvotedId!!.filter { it != id } as ArrayList<String>?
+                post.downvotes = post.downvotes - 1
+            }
+
+            if(post.upvotedId == null)
+                post.upvotedId = ArrayList()
+            post.upvotedId?.add(id)
+        }
+        sendPost(post)
+    }
+
+    override fun downvotePost(post: Posts, id : String) {
+        if(post.downvotedId != null && post.downvotedId!!.contains(id)){
+            post.downvotedId = post.downvotedId!!.filter { it != id } as ArrayList<String>?
+            post.downvotes = post.downvotes - 1
+        }
+        else{
+            post.downvotes = post.downvotes + 1
+            if(post.upvotedId != null && post.upvotedId!!.contains(id)){
+                post.upvotedId = post.upvotedId!!.filter { it != id } as ArrayList<String>?
+                post.upvotes = post.upvotes - 1
+            }
+
+            if(post.downvotedId == null)
+                post.downvotedId = ArrayList()
+            post.downvotedId?.add(id)
+        }
+        sendPost(post)
     }
 
     var view: ProfileView

@@ -13,6 +13,7 @@
 
     <ImageView app:layout_constraintDimensionRatio="16:9" app:layout_constraintTop_toTopOf="parent" android:padding="@dimen/padding_feed"
         android:layout_width="match_parent" android:layout_height="0dp" android:background="@color/grey" android:id="@+id/iv_feed_display_image" />
+
     <ImageView android:layout_width="24dp"  android:layout_height="24dp" android:id="@+id/iv_feed_comment_icon" android:layout_margin="@dimen/padding_feed"
         android:background="@drawable/comment" app:layout_constraintTop_toBottomOf="@id/iv_feed_display_image"
         app:layout_constraintLeft_toLeftOf="parent"/>
@@ -32,23 +33,27 @@
         app:layout_constraintRight_toLeftOf="@id/tv_num_share" android:layout_margin="@dimen/padding_feed" />
     <TextView  android:layout_width="wrap_content" android:layout_height="24dp" android:id="@+id/tv_num_share" android:layout_margin="@dimen/padding_feed"
         app:layout_constraintRight_toRightOf="parent" app:layout_constraintTop_toBottomOf="@id/iv_feed_display_image" android:text="Share"/>
+
     <TextView  android:layout_width="match_parent" android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/iv_feed_comment_icon"
+        app:layout_constraintTop_toBottomOf="@id/iv_feed_comment_icon" android:textSize="@dimen/usertext_size"
         android:id="@+id/tv_feed_title" android:layout_margin="@dimen/padding_feed"/>
 
-    <TextView  android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="..."
+    <TextView  android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="..." android:textSize="@dimen/commenttext_size"
         android:id="@+id/tv_body" android:layout_margin="@dimen/padding_feed" app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent" app:layout_constraintTop_toBottomOf="@id/tv_feed_title"  />
-    <ImageView android:layout_width="48dp" android:layout_height="32dp" android:id="@+id/iv_feed_icon"
+    <ImageView android:layout_width="32dp" android:layout_height="32dp" android:id="@+id/iv_feed_icon" android:background="@color/grey"
         app:layout_constraintTop_toBottomOf="@id/tv_body" android:layout_margin="@dimen/padding_feed"
         app:layout_constraintLeft_toLeftOf="parent" />
 
     <TextView  android:layout_width="wrap_content" android:layout_height="wrap_content"
-        android:id="@+id/tv_user_name" android:layout_margin="@dimen/padding_feed"
+        android:id="@+id/tv_user_name" android:layout_margin="@dimen/padding_feed" android:textSize="@dimen/usertext_size"
         app:layout_constraintLeft_toRightOf="@id/iv_feed_icon"
         app:layout_constraintTop_toBottomOf="@id/tv_body"/>
     <TextView  android:layout_width="wrap_content" android:layout_height="wrap_content"
         android:id="@+id/tv_timestamp" android:layout_margin="@dimen/padding_feed"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tv_body"/>
+    <View
+        android:layout_width="match_parent" android:layout_marginTop="@dimen/padding_mini"
+        android:layout_height="1dp" android:background="@color/grey" app:layout_constraintTop_toBottomOf="@id/iv_feed_icon"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

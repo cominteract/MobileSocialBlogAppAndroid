@@ -4,4 +4,6 @@
     <dimen name="activity_vertical_margin">16dp</dimen>
     <dimen name="padding_feed">8dp</dimen>
     <dimen name="padding_mini">4dp</dimen>
+    <dimen name="usertext_size">18sp</dimen>
+    <dimen name="commenttext_size">14sp</dimen>
 </resources>

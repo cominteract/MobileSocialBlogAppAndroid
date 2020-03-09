@@ -1,6 +1,9 @@
 package com.ainsigne.mobilesocialblogapp.ui.profile
 
 import android.graphics.Bitmap
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -34,7 +37,7 @@ import org.jetbrains.anko.uiThread
  */
 class ProfileFragment : BaseFragment(), ProfileView, PhotoRetrieval {
 
-    var isUpdating = false
+
 
     var isPost = true
 
@@ -56,47 +59,15 @@ class ProfileFragment : BaseFragment(), ProfileView, PhotoRetrieval {
     }
 
     override fun upvotePost(post: Posts) {
-
         currentUser()?.id?.let { id ->
-            if(post.upvotedId != null && post.upvotedId!!.contains(id)){
-                post.upvotedId = post.upvotedId!!.filter { it != id } as ArrayList<String>?
-                post.upvotes = post.upvotes - 1
-            }
-            else{
-                post.upvotes = post.upvotes + 1
-                if(post.downvotedId != null && post.downvotedId!!.contains(id)){
-                    post.downvotedId = post.downvotedId!!.filter { it != id } as ArrayList<String>?
-                    post.downvotes = post.downvotes - 1
-                }
-
-                if(post.upvotedId == null)
-                    post.upvotedId = ArrayList()
-                post.upvotedId?.add(id)
-            }
-            presenter?.sendPost(post)
+            presenter?.upvotePost(post,id)
         }
     }
 
     override fun downvotePost(post: Posts) {
 
         currentUser()?.id?.let { id ->
-
-            if(post.downvotedId != null && post.downvotedId!!.contains(id)){
-                post.downvotedId = post.downvotedId!!.filter { it != id } as ArrayList<String>?
-                post.downvotes = post.downvotes - 1
-            }
-            else{
-                post.downvotes = post.downvotes + 1
-                if(post.upvotedId != null && post.upvotedId!!.contains(id)){
-                    post.upvotedId = post.upvotedId!!.filter { it != id } as ArrayList<String>?
-                    post.upvotes = post.upvotes - 1
-                }
-
-                if(post.downvotedId == null)
-                    post.downvotedId = ArrayList()
-                post.downvotedId?.add(id)
-            }
-            presenter?.sendPost(post)
+            presenter?.downvotePost(post,id)
         }
     }
 
@@ -129,15 +100,12 @@ class ProfileFragment : BaseFragment(), ProfileView, PhotoRetrieval {
                     iv_profile_photo?.let {profile ->
                         Glide.with(context).load(photo).override(32,32).into(profile)
                     }
-
                 }
             }
             tv_profile_firstname?.text = user?.firstname
             tv_profile_lastname?.text = user?.lastname
             tv_profile_birthday?.text = user?.birthday
             tv_profile_location?.text = user?.location
-
-
             et_profile_firstname?.setText(user?.firstname)
             et_profile_lastname?.setText(user?.lastname)
             et_profile_birthday?.setText(user?.birthday)
@@ -212,33 +180,28 @@ class ProfileFragment : BaseFragment(), ProfileView, PhotoRetrieval {
         }
     }
 
-    private fun toggleUpdating(){
-        isUpdating = !isUpdating
-        if(isUpdating){
-            container_profile_et.visibility = View.VISIBLE
-            container_profile_tv.visibility = View.GONE
-
-        }else{
-            container_profile_et.visibility = View.GONE
-            container_profile_tv.visibility = View.VISIBLE
-            var user = currentUser()
-            user?.firstname = et_profile_firstname?.text.toString()
-            user?.lastname = et_profile_lastname?.text.toString()
-            user?.location = et_profile_location?.text.toString()
-            user?.birthday = et_profile_birthday?.text.toString()
-            user?.photoUrl = selectedPhoto
-            if(selectedPhoto.isNotEmpty()){
-                presenter?.uploadImage(selectedPhoto)
+    private fun editProfile(){
+        container_profile_et.visibility = View.VISIBLE
+        container_profile_tv.visibility = View.INVISIBLE
+    }
+    private fun saveProfile(){
+        container_profile_et.visibility = View.VISIBLE
+        container_profile_tv.visibility = View.INVISIBLE
+        var user = currentUser()
+        user?.firstname = et_profile_firstname?.text.toString()
+        user?.lastname = et_profile_lastname?.text.toString()
+        user?.location = et_profile_location?.text.toString()
+        user?.birthday = et_profile_birthday?.text.toString()
+        user?.photoUrl = selectedPhoto
+        if(selectedPhoto.isNotEmpty()){
+            presenter?.uploadImage(selectedPhoto)
+        }
+        else{
+            user?.let {
+                presenter?.updateUser(it , selectedPhoto.isNotEmpty())
             }
-            else{
-                user?.let {
-                    presenter?.updateUser(it , selectedPhoto.isNotEmpty())
-                }
-            }
-
         }
     }
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -270,35 +233,67 @@ class ProfileFragment : BaseFragment(), ProfileView, PhotoRetrieval {
         }
 
         if(!userName.isNotEmpty()){
-            btn_profile_logout.setOnClickListener {
-                Config.updateUser("")
-                Config.user = null
-                main.navigateApp()
-            }
+
             iv_profile_photo.setOnClickListener {
                 main.toggleBottomSheet()
             }
-            btn_profile_update.setOnClickListener { toggleUpdating() }
+            btn_profile_edit.setOnClickListener { editProfile() }
+            btn_profile_update.setOnClickListener { saveProfile() }
         }
         else {
             btn_profile_chat.visibility = View.VISIBLE
             btn_profile_chat.setOnClickListener {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    btn_profile_posts.setBackgroundColor(resources.getColor(R.color.colorPrimary, null))
+                    btn_profile_friends.setBackgroundColor(resources.getColor(R.color.colorPrimary, null))
+                    it.setBackgroundColor(resources.getColor(R.color.details_app_bg_color, null))
+                }else{
+                    btn_profile_posts.setBackgroundColor(resources.getColor(R.color.colorPrimary))
+                    btn_profile_friends.setBackgroundColor(resources.getColor(R.color.colorPrimary))
+                    it.setBackgroundColor(resources.getColor(R.color.details_app_bg_color))
+                }
                 userFrom(userName)?.let {user ->
                     val bundle = Bundle()
                     bundle.putString("chatId", user.id)
                     main.addOnTopWithBundle(UINavigation.session, bundle)
                 }
-
             }
         }
 
         btn_profile_posts.setOnClickListener{
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                btn_profile_chat.setBackgroundColor(resources.getColor(R.color.colorPrimary, null))
+                btn_profile_friends.setBackgroundColor(resources.getColor(R.color.colorPrimary, null))
+                it.setBackgroundColor(resources.getColor(R.color.details_app_bg_color, null))
+            }else{
+                btn_profile_chat.setBackgroundColor(resources.getColor(R.color.colorPrimary))
+                btn_profile_friends.setBackgroundColor(resources.getColor(R.color.colorPrimary))
+                it.setBackgroundColor(resources.getColor(R.color.details_app_bg_color))
+            }
             isPost = true
             toggleFeed()
         }
         btn_profile_friends.setOnClickListener {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                btn_profile_chat.setBackgroundColor(resources.getColor(R.color.colorPrimary, null))
+                btn_profile_posts.setBackgroundColor(resources.getColor(R.color.colorPrimary, null))
+                it.setBackgroundColor(resources.getColor(R.color.details_app_bg_color, null))
+            }else{
+                btn_profile_chat.setBackgroundColor(resources.getColor(R.color.colorPrimary))
+                btn_profile_posts.setBackgroundColor(resources.getColor(R.color.colorPrimary))
+                it.setBackgroundColor(resources.getColor(R.color.details_app_bg_color))
+            }
             isPost = false
             toggleFeed()
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            btn_profile_chat.setBackgroundColor(resources.getColor(R.color.colorPrimary, null))
+            btn_profile_friends.setBackgroundColor(resources.getColor(R.color.colorPrimary, null))
+            btn_profile_posts.setBackgroundColor(resources.getColor(R.color.details_app_bg_color, null))
+        }else{
+            btn_profile_chat.setBackgroundColor(resources.getColor(R.color.colorPrimary))
+            btn_profile_friends.setBackgroundColor(resources.getColor(R.color.colorPrimary))
+            btn_profile_posts.setBackgroundColor(resources.getColor(R.color.details_app_bg_color))
         }
     }
 

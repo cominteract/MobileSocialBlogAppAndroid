@@ -13,8 +13,11 @@ import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
 import android.util.Log
+import android.view.Menu
+import android.view.MenuItem
 import android.view.View
 import android.widget.LinearLayout
+import androidx.appcompat.view.menu.MenuBuilder
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.FileProvider
 import com.ainsigne.mobilesocialblogapp.R
@@ -25,6 +28,7 @@ import com.ainsigne.mobilesocialblogapp.utils.toStringFormat
 import com.ainsigne.mobilesocialblogapp.utils.toStringFull
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.bottom_sheet.*
 import kotlinx.android.synthetic.main.content_main.*
 import pl.aprilapps.easyphotopicker.EasyImage
@@ -106,7 +110,7 @@ class MainActivity : MainView, BaseActivity(){
             loadFragment(UINavigation.feed)
 //            navigation.visibility = View.VISIBLE
             val layoutParams = navigation.layoutParams
-            layoutParams.height = 72
+            layoutParams.height = 172
             navigation.layoutParams =  layoutParams
         }
     }
@@ -148,6 +152,29 @@ class MainActivity : MainView, BaseActivity(){
 
         navigation.setOnNavigationItemSelectedListener(onNavigationItemSelectedListener)
         navigateApp()
+        setSupportActionBar(toolbar)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        when (item?.itemId){
+            R.id.action_logout -> {
+                Config.updateUser("")
+                Config.user = null
+                navigateApp()
+                return true
+            }
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        val inflater = menuInflater
+        inflater.inflate(R.menu.menu_overflow_list, menu)
+
+        if (menu is MenuBuilder) {
+            menu.setOptionalIconsVisible(true)
+        }
+        return true
     }
 
     fun getPhotoFile(context: Context): Uri? {
@@ -204,6 +231,14 @@ class MainActivity : MainView, BaseActivity(){
     }
 
     private val onNavigationItemSelectedListener = BottomNavigationView.OnNavigationItemSelectedListener { item ->
+        var count = 0
+        while(supportFragmentManager.backStackEntryCount > 0)
+        {
+            count++
+            if(count == 3)
+                break
+            dismiss()
+        }
         if(presenter != null) {
             loadFragment(UINavigation.tabState(item.itemId, presenter!!.isLogged()))
         }
@@ -214,6 +249,7 @@ class MainActivity : MainView, BaseActivity(){
     fun toggleBottomSheet() {
         if (sheetBehavior!!.state != BottomSheetBehavior.STATE_EXPANDED) {
             sheetBehavior!!.setState(BottomSheetBehavior.STATE_EXPANDED)
+
 
         } else {
             sheetBehavior!!.setState(BottomSheetBehavior.STATE_COLLAPSED)

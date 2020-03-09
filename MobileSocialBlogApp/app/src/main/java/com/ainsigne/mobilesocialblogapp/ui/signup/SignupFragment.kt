@@ -106,13 +106,10 @@ class SignupFragment : BaseFragment(), SignupView {
             val username = et_signup_username.text.toString()
             val password = et_signup_password.text.toString()
             val exist = presenter?.usernameExists(username)
-            Log.d(" Is Same ${isSame()} ", " Is Exist $exist Is null user $user ")
-
             if(isSame() && exist != null && !exist && presenter?.getUserFrom(username) == null){
 
                 user?.let {signupUser ->
                     signupUser.id = Constants.getRandomString(22)
-                    Log.d(" User ${et_signup_lastname.text.toString()} "," User ${et_signup_firstname.text.toString()} ")
                     signupUser.firstname = et_signup_firstname.text.toString()
                     signupUser.lastname = et_signup_lastname.text.toString()
                     signupUser.fullname = "${signupUser.firstname} ${signupUser.lastname}"
@@ -156,7 +153,6 @@ class SignupFragment : BaseFragment(), SignupView {
     }
 
     override fun addedUserUpdateView() {
-        Log.d(" User ${user?.id} "," User ${user?.id} ")
         val online = user?.online
         Config.user = user
         if(online != null && online)

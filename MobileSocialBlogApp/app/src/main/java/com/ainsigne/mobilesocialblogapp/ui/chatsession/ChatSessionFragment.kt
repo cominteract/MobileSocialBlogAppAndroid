@@ -70,39 +70,9 @@ class ChatSessionFragment : BaseFragment(), ChatSessionView {
                     uiThread {
                         rv_chatsession.adapter = ChatMessagesAdapter(chats, it)
                         btn_chat_send.setOnClickListener {
-
-                            val chat = ChatMessages()
-                            chat.id = Constants.getRandomString(22)
-                            chat.author = user?.username
-                            chat.userId = user?.id
-                            chat.timestamp = Date().toString()
-                            chat.message = et_chat_message.text.toString()
-                            chat.replyTo = chatId
-                            chat.timestamp_from = Date().fromNow()
-                            chat.msgId = chats.size
-
-                            presenter?.sendChat(chat)
-                            var session = ChatSession()
-                            user?.id?.let {id->
-                                presenter?.allSessions()?.filter { it.userIds != null && it.userIds!!.contains(id) && it.userIds!!.contains(chatId) }?.let {filtered->
-                                    if(filtered.isNotEmpty())
-                                        session = filtered[0]
-                                }
+                            user?.let {aUser ->
+                                presenter?.sendChatWithSession(aUser,chats,chatId,et_chat_message.text.toString())
                             }
-                            if(session.id == null){
-                                session.id = Constants.getRandomString(22)
-                                session.userIds = ArrayList()
-                                user?.id?.let {id->
-                                    session.userIds?.add(id)
-                                    session.userIds?.add(chatId)
-                                }
-
-                            }
-                            session.message = et_chat_message.text.toString()
-                            session.author = user?.username
-                            session.timestamp = Date().toString()
-                            presenter?.sendSession(session)
-
                         }
                     }
                 }

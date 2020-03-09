@@ -69,7 +69,6 @@ class FeedFragment : BaseFragment(), FeedView , PhotoRetrieval{
                     post.upvotedId = ArrayList()
                 post.upvotedId?.add(id)
             }
-            Log.d(" Am i upvoted d"," Am i upvoted ${post.upvotes} ")
             presenter?.sendPost(post)
         }
     }

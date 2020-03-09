@@ -1,6 +1,7 @@
 package com.ainsigne.mobilesocialblogapp.ui.discover
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -52,68 +53,21 @@ class DiscoverFragment : BaseFragment(), DiscoverView {
     }
 
     override fun cancelFriendClicked(bUser: Users) {
-        if(user?.friendsRequestId?.filter { it != bUser.id } != null)
-            user?.friendsRequestId = user?.friendsRequestId?.filter { it != bUser.id } as ArrayList<String>
-        if(user?.friendsInviteid?.filter { it != bUser.id } != null)
-            user?.friendsInviteid = user?.friendsInviteid?.filter { it != bUser.id } as ArrayList<String>
-        if(bUser.friendsRequestId?.filter { it != user?.id } != null)
-            bUser.friendsRequestId = bUser.friendsRequestId?.filter { it != user?.id } as ArrayList<String>
-        if(bUser.friendsInviteid?.filter { it != user?.id } != null)
-            bUser.friendsInviteid = bUser.friendsInviteid?.filter { it != user?.id } as ArrayList<String>
         user?.let {
-            presenter?.updateUsers(it,bUser)
+            presenter?.cancelFriend(it,bUser)
         }
     }
 
     override fun addFriendClicked(bUser: Users) {
-        user?.friendsRequestId?.let {
-            bUser.id?.let {id ->
-                it.add(id)
-            }
-        }
-        user?.friendsInviteid?.let {
-            bUser.id?.let {id ->
-                it.add(id)
-            }
-        }
-
-        if(bUser.friendsInviteid == null){
-            bUser.friendsInviteid = ArrayList<String>()
-            user?.id?.let {
-                bUser.friendsInviteid?.add(it)
-            }
-        }
-        if(user?.friendsRequestId == null){
-            user?.friendsRequestId = ArrayList<String>()
-            bUser.id?.let {
-                user?.friendsRequestId?.add(it)
-            }
-        }
         user?.let {
-            presenter?.updateUsers(it,bUser)
+            presenter?.addFriend(it,bUser)
         }
-
     }
 
     override fun acceptFriendClicked(bUser: Users) {
-        user?.friendsRequestId = user?.friendsRequestId?.filter { it != bUser.id } as ArrayList<String>
-        user?.friendsInviteid = user?.friendsInviteid?.filter { it != bUser.id } as ArrayList<String>
-        bUser.friendsRequestId = bUser.friendsRequestId?.filter { it != user?.id } as ArrayList<String>
-        bUser.friendsInviteid = bUser.friendsInviteid?.filter { it != user?.id } as ArrayList<String>
-        if(user?.friendsId == null)
-            user?.friendsId = ArrayList<String>()
-        if(bUser.friendsId == null)
-            bUser.friendsId = ArrayList<String>()
-        bUser.id?.let {
-            user?.friendsId?.add(it)
-        }
-        user?.id?.let {
-            bUser.friendsId?.add(it)
-        }
         user?.let {
-            presenter?.updateUsers(it, bUser)
+            presenter?.acceptFriend(it,bUser)
         }
-
 
     }
 

@@ -4,15 +4,15 @@
     android:layout_height="wrap_content"
     android:padding="@dimen/padding_feed"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-    <ImageView android:layout_width="42dp" android:layout_height="42dp"
-        android:id="@+id/iv_chatsession_icon" app:layout_constraintTop_toTopOf="parent"
+    <ImageView android:layout_width="36dp" android:layout_height="36dp" android:background="@color/grey"
+        android:id="@+id/iv_chatsession_icon" app:layout_constraintTop_toTopOf="parent" android:layout_margin="@dimen/padding_mini"
         app:layout_constraintLeft_toLeftOf="parent" />
     <TextView android:id="@+id/tv_chatsession_username"
-        android:layout_width="wrap_content" app:layout_constraintTop_toTopOf="parent"
+        android:layout_width="wrap_content" app:layout_constraintTop_toTopOf="parent" android:layout_margin="@dimen/padding_mini"
         android:layout_height="wrap_content" app:layout_constraintLeft_toRightOf="@id/iv_chatsession_icon" />
 
     <TextView android:id="@+id/tv_chatsession_message" android:padding="@dimen/padding_feed"
-        android:textColor="@color/white" android:background="#dd4400"
+        android:textColor="@color/white" android:background="@drawable/rounded_message" android:layout_margin="@dimen/padding_mini"
         app:layout_constraintTop_toBottomOf="@id/iv_chatsession_icon"
         android:layout_width="match_parent" app:layout_constraintLeft_toLeftOf="parent"
         android:layout_height="wrap_content" />
