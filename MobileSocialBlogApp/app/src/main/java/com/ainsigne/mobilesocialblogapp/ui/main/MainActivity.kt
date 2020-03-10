@@ -110,7 +110,7 @@ class MainActivity : MainView, BaseActivity(){
             loadFragment(UINavigation.feed)
 //            navigation.visibility = View.VISIBLE
             val layoutParams = navigation.layoutParams
-            layoutParams.height = 172
+            layoutParams.height = dimensionPoint(48).toInt()
             navigation.layoutParams =  layoutParams
         }
     }

@@ -44,13 +44,14 @@ class FeedDetailsFragment : BaseFragment(), FeedDetailsView {
     var post : Posts? = null
 
     override fun userFrom(author: String): Users? {
-        presenter?.allUsers()?.filter{ it.username == author }?.let {
-            return it[0]
-        }
-        return null
+        return presenter?.allUsers()?.first { it.username == author }
     }
 
     override fun addedCommentsUpdateView() {
+        presenter?.retrieveAll()
+    }
+
+    override fun updatedPostUpdateView() {
         presenter?.retrieveAll()
     }
 
@@ -103,7 +104,21 @@ class FeedDetailsFragment : BaseFragment(), FeedDetailsView {
      **/
     var presenter: FeedDetailsPresenter? = null
 
+    override fun upvotePost(post: Posts) {
+        Config.getUser()?.let {
+            userFrom(it)?.id?.let {id->
+                presenter?.upvotePost(post,id)
+            }
+        }
+    }
 
+    override fun downvotePost(post: Posts) {
+        Config.getUser()?.let {
+            userFrom(it)?.id?.let {id->
+                presenter?.downvotePost(post, id)
+            }
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

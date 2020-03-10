@@ -33,6 +33,8 @@ class OptionalSignupFragment : BaseFragment(), OptionalSignupView, PhotoRetrieva
 
     override fun updatedUserUpdateView() {
         if(selectedPhoto == ""){
+            progress_circular.visibility = View.GONE
+            main.toggleBottomSheet()
             main.navigateApp()
             // move to main
         }
@@ -76,8 +78,6 @@ class OptionalSignupFragment : BaseFragment(), OptionalSignupView, PhotoRetrieva
             main = this.context as MainActivity
             main.photoRetrieval = this
         }
-
-
     }
 
     override fun onCreateView(
@@ -86,8 +86,6 @@ class OptionalSignupFragment : BaseFragment(), OptionalSignupView, PhotoRetrieva
     ): View? {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_optional_signup, container, false)
-
-
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -106,17 +104,15 @@ class OptionalSignupFragment : BaseFragment(), OptionalSignupView, PhotoRetrieva
                     user?.online = true
                     if(selectedPhoto.isNotEmpty()){
                         user?.photoUrl = selectedPhoto
+                        progress_circular.visibility = View.VISIBLE
                         presenter?.uploadImage(selectedPhoto)
                     }
                     else {
                         user?.let { updatedUser ->
                             presenter?.updateUser(updatedUser, false)
                         }
-
                     }
                 }
-
-
             }
         }
     }
@@ -127,6 +123,7 @@ class OptionalSignupFragment : BaseFragment(), OptionalSignupView, PhotoRetrieva
         }
         doAsync { uiThread {
             iv_optional_photo?.setImageBitmap(bitmap)
+            main.toggleBottomSheet()
         } }
 
     }

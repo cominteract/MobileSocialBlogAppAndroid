@@ -49,52 +49,17 @@ class FeedFragment : BaseFragment(), FeedView , PhotoRetrieval{
 
     var isPosting = false
 
-    var isUploading = false
-
     override fun upvotePost(post: Posts) {
 
         currentUser()?.id?.let { id ->
-            if(post.upvotedId != null && post.upvotedId!!.contains(id)){
-                post.upvotedId = post.upvotedId!!.filter { it != id } as ArrayList<String>?
-                post.upvotes = post.upvotes - 1
-            }
-            else{
-                post.upvotes = post.upvotes + 1
-                if(post.downvotedId != null && post.downvotedId!!.contains(id)){
-                    post.downvotedId = post.downvotedId!!.filter { it != id } as ArrayList<String>?
-                    post.downvotes = post.downvotes - 1
-                }
-
-                if(post.upvotedId == null)
-                    post.upvotedId = ArrayList()
-                post.upvotedId?.add(id)
-            }
-            presenter?.sendPost(post)
+            presenter?.upvotePost(post,id)
         }
     }
 
     override fun downvotePost(post: Posts) {
 
         currentUser()?.id?.let { id ->
-
-            if(post.downvotedId != null && post.downvotedId!!.contains(id)){
-                post.downvotedId = post.downvotedId!!.filter { it != id } as ArrayList<String>?
-                post.downvotes = post.downvotes - 1
-            }
-            else{
-
-                post.downvotes = post.downvotes + 1
-                if(post.upvotedId != null && post.upvotedId!!.contains(id)){
-                    post.upvotedId = post.upvotedId!!.filter { it != id } as ArrayList<String>?
-                    post.upvotes = post.upvotes - 1
-                }
-
-                if(post.downvotedId == null)
-                    post.downvotedId = ArrayList()
-                post.downvotedId?.add(id)
-            }
-            Log.d(" Am i dpwmvoted "," Am i downvoted ${post.downvotes}")
-            presenter?.sendPost(post)
+            presenter?.downvotePost(post,id)
         }
     }
 
@@ -115,6 +80,9 @@ class FeedFragment : BaseFragment(), FeedView , PhotoRetrieval{
         Config.updateRefreshDiscover(false)
         post = null
         selectedPhoto = ""
+        isPosting = !isPosting
+        container_sendpost.visibility = View.GONE
+        btn_share_thoughts.setText("Share thoughts")
         presenter?.retrieveAll()
     }
 
@@ -200,23 +168,17 @@ class FeedFragment : BaseFragment(), FeedView , PhotoRetrieval{
     ): View? {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_feed, container, false)
-
-
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-//        btn_upload.setOnClickListener {
-//            main.toggleBottomSheet()
-//        }
         presenter?.retrieveAll()
         isLoading = true
         container_sendpost.visibility = View.GONE
         btn_share_thoughts.setOnClickListener {
             isPosting = !isPosting
             container_sendpost.visibility = View.GONE
-            btn_share_thoughts.setText("Share your thoughts")
+            btn_share_thoughts.setText("Share thoughts")
             if(isPosting){
                 container_sendpost.visibility = View.VISIBLE
                 btn_share_thoughts.setText("Close")
@@ -243,15 +205,11 @@ class FeedFragment : BaseFragment(), FeedView , PhotoRetrieval{
             post?.timestamp_from = Date().toStringFormat()
             if(selectedPhoto.isNotEmpty()){
                 post?.id?.let { id ->
-
-                    Log.d(" Uploading "," Uploading ")
                     presenter?.uploadPostImage(selectedPhoto, id)
                 }
             }else{
                 post?.url = Constants.defaultposturl
                 post?.let {sentpost ->
-
-                    Log.d(" Sending "," Sending ")
                     presenter?.sendPost(sentpost)
                 }
             }

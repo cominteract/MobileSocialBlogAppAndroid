@@ -22,10 +22,11 @@
 
 
         <com.google.android.material.bottomnavigation.BottomNavigationView
+
             android:id="@+id/navigation"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:background="@android:color/white"
+            android:layout_height="16dp"
+            android:background="@color/white"
             app:itemIconTint="@android:color/holo_orange_dark"
             app:itemTextColor="@android:color/holo_orange_dark"
             app:layout_constraintBottom_toBottomOf="parent"

@@ -14,8 +14,11 @@ import com.ainsigne.mobilesocialblogapp.models.Users
  **/
 interface FeedDetailsView {
     fun addedCommentsUpdateView()
+    fun updatedPostUpdateView()
     fun retrievedAllUpdateView()
     fun userFrom(author : String) : Users?
+    fun upvotePost(post: Posts)
+    fun downvotePost(post : Posts)
 }
 
 /**
@@ -24,6 +27,7 @@ interface FeedDetailsView {
 interface FeedDetailsContract {
     fun addedComments()
     fun retrievedAll()
+    fun updatedPost()
 }
 
 /**
@@ -38,6 +42,8 @@ interface FeedDetailsPresenter {
     fun sendComment(comment : Comments)
     fun commentsFromPost(postId : String) : List<Comments>?
     fun getUserFrom(username : String) : Users?
+    fun upvotePost(post: Posts, id : String)
+    fun downvotePost(post : Posts, id : String)
 }
 
 
@@ -55,6 +61,10 @@ class FeedDetailsPresenterImplementation(
     override fun retrievedAll() {
 
         view.retrievedAllUpdateView()
+    }
+
+    override fun updatedPost() {
+        view.updatedPostUpdateView()
     }
 
     override fun allComments(): List<Comments>? {
@@ -90,6 +100,44 @@ class FeedDetailsPresenterImplementation(
 
     override fun getUserFrom(username: String): Users? {
         return service.getUserFrom(username)
+    }
+
+    override fun upvotePost(post: Posts, id: String) {
+        if(post.upvotedId != null && post.upvotedId!!.contains(id)){
+            post.upvotedId = post.upvotedId!!.filter { it != id } as ArrayList<String>?
+            post.upvotes = post.upvotes - 1
+        }
+        else{
+            post.upvotes = post.upvotes + 1
+            if(post.downvotedId != null && post.downvotedId!!.contains(id)){
+                post.downvotedId = post.downvotedId!!.filter { it != id } as ArrayList<String>?
+                post.downvotes = post.downvotes - 1
+            }
+
+            if(post.upvotedId == null)
+                post.upvotedId = ArrayList()
+            post.upvotedId?.add(id)
+        }
+        service.addPostsToApi(post, true)
+    }
+
+    override fun downvotePost(post: Posts, id: String) {
+        if(post.downvotedId != null && post.downvotedId!!.contains(id)){
+            post.downvotedId = post.downvotedId!!.filter { it != id } as ArrayList<String>?
+            post.downvotes = post.downvotes - 1
+        }
+        else{
+            post.downvotes = post.downvotes + 1
+            if(post.upvotedId != null && post.upvotedId!!.contains(id)){
+                post.upvotedId = post.upvotedId!!.filter { it != id } as ArrayList<String>?
+                post.upvotes = post.upvotes - 1
+            }
+
+            if(post.downvotedId == null)
+                post.downvotedId = ArrayList()
+            post.downvotedId?.add(id)
+        }
+        service.addPostsToApi(post, true)
     }
 
     var view: FeedDetailsView

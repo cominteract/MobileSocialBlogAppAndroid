@@ -7,6 +7,7 @@ import com.ainsigne.mobilesocialblogapp.models.Comments
 import com.ainsigne.mobilesocialblogapp.models.Posts
 import com.ainsigne.mobilesocialblogapp.models.Users
 import com.ainsigne.mobilesocialblogapp.utils.Constants
+import java.io.File
 
 /**
  * FeedDetailsServices for implementing the services needed for the presenter.
@@ -92,6 +93,33 @@ class FeedDetailsServices(
             return it
         }
         return allComments?.toList()
+    }
+
+    fun addPostsToApi(post : Posts , toUpload: Boolean){
+        if(post.id == null){
+            post.id = Constants.getRandomString(22)
+            allPosts?.let { allposts ->
+                if(!allposts.filter { it.id == post.id }.isNullOrEmpty())
+                    post.id = Constants.getRandomString(22)
+            }
+        }
+        if(post.author == null || post.userId == null || post.title == null)
+        {
+            Log.d(" Can't add post ", " Can't add post missing fields ")
+            return
+        }
+        post.url?.let {
+            if(!it.contains(Constants.firebaseurl) && !it.contains(Constants.defaultuserurl) && toUpload && File(it).exists()){
+                apiManager.uploadImage(File(it), "img_${post.id!!}", completion = { err, msg ->
+                    if(err == null)
+                        Log.d(" Uploaded "," Uploaded ")
+                })
+            }
+        }
+        apiManager.addPosts(Posts.convertToKeyVal(post), completion = { err,msg ->
+            if(err == null)
+                contract?.updatedPost()
+        })
     }
 
     fun addCommentsToApi(comment : Comments){

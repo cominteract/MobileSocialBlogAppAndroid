@@ -11,6 +11,7 @@ import com.ainsigne.mobilesocialblogapp.models.Users
 import com.ainsigne.mobilesocialblogapp.ui.discover.DiscoverView
 import com.ainsigne.mobilesocialblogapp.ui.feed.FeedView
 import com.ainsigne.mobilesocialblogapp.ui.feeddetails.FeedDetailsView
+import com.ainsigne.mobilesocialblogapp.utils.Config
 import com.ainsigne.mobilesocialblogapp.utils.fromNow
 import com.ainsigne.mobilesocialblogapp.utils.toDate
 import com.bumptech.glide.Glide
@@ -84,8 +85,11 @@ class CommentsAdapter(comments_ : List<Comments>, post_ : Posts, view_ : FeedDet
             feedView.tv_user_name.text = post.author
             feedView.tv_body.text = post.body
             feedView.tv_timestamp.text = post.timestamp?.toDate()?.fromNow()
-            feedView.tv_num_upvotes.text = post.upvotes.toString()
+            val votes = post.upvotes - post.downvotes
+            feedView.tv_num_upvotes.text = votes.toString()
 
+            feedView.iv_upvote_icon.setOnClickListener {  adapterView.upvotePost(post) }
+            feedView.iv_downvote_icon.setOnClickListener {  adapterView.downvotePost(post) }
             Glide.with(feedView.context).load(post.url).into(feedView.iv_feed_display_image)
             post.author?.let { author ->
                 Glide.with(feedView.context).load(adapterView.userFrom(author)?.photoUrl).into(feedView.iv_feed_icon)

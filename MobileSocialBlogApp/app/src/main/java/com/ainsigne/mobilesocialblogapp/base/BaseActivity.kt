@@ -2,13 +2,13 @@ package com.ainsigne.mobilesocialblogapp.base
 
 
 import android.os.Bundle
-import android.view.Menu
+import android.util.DisplayMetrics
+import android.util.Log
+import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.view.menu.MenuBuilder
 import androidx.fragment.app.FragmentTransaction
 import com.ainsigne.mobilesocialblogapp.R
 import com.ainsigne.mobilesocialblogapp.utils.UINavigation
-import kotlinx.android.synthetic.main.activity_main.*
 
 
 /**
@@ -17,6 +17,14 @@ import kotlinx.android.synthetic.main.activity_main.*
  * @param P the type of the presenter the Activity is based on
  */
 open class BaseActivity : AppCompatActivity() {
+
+    fun dimensionPoint(newSize : Int) : Float {
+        val d = windowManager.defaultDisplay
+        var dm = DisplayMetrics()
+        d.getMetrics(dm)
+        Log.d("Display met ${dm.density}", "Display met ${dm.densityDpi}")
+        return dm.density * newSize
+    }
 
     /**
      * moveToWithBundle uses fragKey string to navigate

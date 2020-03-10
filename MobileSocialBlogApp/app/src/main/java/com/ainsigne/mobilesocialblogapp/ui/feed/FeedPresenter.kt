@@ -17,11 +17,11 @@ interface FeedView {
     fun retrievedAllUpdateView()
     fun downloadedImageUpdateView(image : String)
     fun uploadedImageUpdateView()
-    fun upvotePost(post : Posts)
-    fun downvotePost(post : Posts)
     fun currentUser() : Users?
     fun navigateToDetails(postId : String)
     fun navigateToProfile(username: String)
+    fun upvotePost(post: Posts)
+    fun downvotePost(post : Posts)
     fun userFrom(author : String) : Users?
 }
 
@@ -54,6 +54,8 @@ interface FeedPresenter {
     fun uploadImage(data : String)
     fun uploadPostImage(data : String, postId : String)
     fun commentsFromPost(postId : String) : List<Comments>?
+    fun upvotePost(post: Posts, id : String)
+    fun downvotePost(post : Posts, id : String)
 }
 
 
@@ -138,6 +140,44 @@ class FeedPresenterImplementation(
 
     override fun commentsFromPost(postId: String): List<Comments>? {
         return service.commentsFromPost(postId)?.toList()
+    }
+
+    override fun upvotePost(post: Posts, id: String) {
+        if(post.upvotedId != null && post.upvotedId!!.contains(id)){
+            post.upvotedId = post.upvotedId!!.filter { it != id } as ArrayList<String>?
+            post.upvotes = post.upvotes - 1
+        }
+        else{
+            post.upvotes = post.upvotes + 1
+            if(post.downvotedId != null && post.downvotedId!!.contains(id)){
+                post.downvotedId = post.downvotedId!!.filter { it != id } as ArrayList<String>?
+                post.downvotes = post.downvotes - 1
+            }
+
+            if(post.upvotedId == null)
+                post.upvotedId = ArrayList()
+            post.upvotedId?.add(id)
+        }
+        sendPost(post)
+    }
+
+    override fun downvotePost(post: Posts, id: String) {
+        if(post.downvotedId != null && post.downvotedId!!.contains(id)){
+            post.downvotedId = post.downvotedId!!.filter { it != id } as ArrayList<String>?
+            post.downvotes = post.downvotes - 1
+        }
+        else{
+            post.downvotes = post.downvotes + 1
+            if(post.upvotedId != null && post.upvotedId!!.contains(id)){
+                post.upvotedId = post.upvotedId!!.filter { it != id } as ArrayList<String>?
+                post.upvotes = post.upvotes - 1
+            }
+
+            if(post.downvotedId == null)
+                post.downvotedId = ArrayList()
+            post.downvotedId?.add(id)
+        }
+        sendPost(post)
     }
 
     var view: FeedView

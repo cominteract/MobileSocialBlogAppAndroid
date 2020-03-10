@@ -76,27 +76,25 @@ class SignupFragment : BaseFragment(), SignupView {
                     Config.updateUser(username)
                     it.getUserFrom(username)?.let {letUser ->
                         user = letUser
-                        val online = user?.online
-                        if(online != null && !online && (letUser.birthday == null
-                            || letUser.photoUrl == Constants.defaultuserurl || letUser.location == null))
-                        {
-                            main.navigateOpt()
-                            // move optional
-                        }
-                        else if(online == true){
-                            Config.user = letUser
-                            main.navigateApp()
-                            // move optional
-                        }
-                        else if(online == null){
-                            user?.online = true
-                            main.navigateOpt()
 
-                            // move optional
-                        }
-                        else{
-                            user?.online = true
-                            it.signupUser(user!!)
+                        user?.online?.let {online ->
+                                when(online){
+                                    !online && (letUser.birthday == null
+                                            || letUser.photoUrl == Constants.defaultuserurl || letUser.location == null) -> main.navigateOpt()
+                                    online -> {
+                                        Config.user = letUser
+                                        main.navigateApp()
+                                    }
+                                    else -> {
+                                        user?.online = true
+                                        it.signupUser(user!!)
+                                    }
+                                }
+                            }
+                        if(user?.online == null)
+                        {
+                            user?.online = false
+                            main.navigateOpt()
                         }
                     }
                 }
@@ -115,7 +113,6 @@ class SignupFragment : BaseFragment(), SignupView {
                     signupUser.fullname = "${signupUser.firstname} ${signupUser.lastname}"
                     signupUser.username = username
                     signupUser.password = password
-                    signupUser.online = true
                     Config.updateUser(username)
                     presenter?.signupUser(signupUser)
                 }

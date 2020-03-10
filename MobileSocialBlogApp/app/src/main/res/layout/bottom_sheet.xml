@@ -2,10 +2,12 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/bottom_sheet"
+    android:background="@drawable/rounded_sheet"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:padding="@dimen/padding_feed"
+
     app:behavior_hideable="true"
     app:behavior_peekHeight="1dp"
     app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
