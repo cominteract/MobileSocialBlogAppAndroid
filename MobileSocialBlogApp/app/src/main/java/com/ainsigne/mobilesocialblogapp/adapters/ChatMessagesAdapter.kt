@@ -29,16 +29,14 @@ class ChatMessagesAdapter(chats_ : List<ChatMessages>, view_ : ChatSessionView) 
 
     override fun onCreateViewHolder(p0: ViewGroup, p1: Int): FeedDataHolder {
         var inflatedView: View?
-        if(p1 == replyView){
+        return if(p1 == replyView){
             inflatedView = LayoutInflater.from(p0.context)
                 .inflate(R.layout.adapter_chatsession, p0, false)
-            return FeedDataHolder(inflatedView)
-        }
-        else
-        {
+            FeedDataHolder(inflatedView)
+        } else {
             inflatedView = LayoutInflater.from(p0.context)
                 .inflate(R.layout.adapter_chatsession_reply, p0, false)
-            return FeedDataHolder(inflatedView)
+            FeedDataHolder(inflatedView)
         }
 
     }

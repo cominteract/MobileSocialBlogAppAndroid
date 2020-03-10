@@ -1,7 +1,9 @@
 package com.ainsigne.mobilesocialblogapp.ui.chatsession
 
+import android.util.Log
 import com.ainsigne.mobilesocialblogapp.R
 import com.ainsigne.mobilesocialblogapp.manager.*
+import com.ainsigne.mobilesocialblogapp.models.CallRecords
 import com.ainsigne.mobilesocialblogapp.models.ChatMessages
 import com.ainsigne.mobilesocialblogapp.models.ChatSession
 import com.ainsigne.mobilesocialblogapp.models.Users
@@ -26,6 +28,10 @@ class ChatSessionServices(
      * as ChatSessionView type. Must be weak
      **/
     var contract: ChatSessionContract? = null
+
+
+    var callAPIManager : CallAPIManager = CallAPIManager()
+
     var allChats : ArrayList<ChatMessages>? = null
 
     var allSessions : ArrayList<ChatSession>? = null
@@ -35,6 +41,28 @@ class ChatSessionServices(
     var retrievedChats = false
     var retrievedUsers = false
     var retrievedSessions = false
+
+    fun startCall(call : CallRecords){
+        callAPIManager.addCall(CallRecords.convertToKeyVal(call), completion = { err,msg ->
+
+
+        })
+    }
+
+    fun retrieveCalls(userId : String){
+        val retrievedCalls = object : CallsRetrieved {
+            override fun retrievedCalls(callRecords: CallRecords, msg: String) {
+                Log.d(" Call from service "," Call from service ${callRecords.conferenceName}")
+                callRecords.callerName?.let {
+                    callRecords.conferenceName?.let { conferenceName ->
+                        contract?.receivedCallFrom(it, conferenceName)
+                    }
+                }
+            }
+        }
+        Log.d("Call retrieve service","Call retrieve service $userId")
+        callAPIManager.retrieveIncomingCall(userId, retrievedCalls)
+    }
 
     fun retrievedAll() : Boolean {
         return retrievedChats && retrievedSessions && retrievedUsers

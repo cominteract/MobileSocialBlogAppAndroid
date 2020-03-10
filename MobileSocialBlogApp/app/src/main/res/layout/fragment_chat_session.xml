@@ -27,6 +27,11 @@
             android:layout_weight="1"
             android:layout_width="0dp"
             android:layout_height="wrap_content" />
+        <ImageView
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:background="@android:drawable/presence_video_online"
+            android:id="@+id/iv_chat_video" />
         <Button
             android:text="Send"
             android:id="@+id/btn_chat_send"

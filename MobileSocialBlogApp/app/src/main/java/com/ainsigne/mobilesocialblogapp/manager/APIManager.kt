@@ -16,6 +16,10 @@ interface UsersRetrieved{
     fun retrievedUsers(users : ArrayList<Users>?, msg : String)
 }
 
+interface CallsRetrieved{
+    fun retrievedCalls(callRecords : CallRecords , msg : String)
+}
+
 interface PostsRetrieved{
     fun retrievedPosts(posts : ArrayList<Posts>?, msg : String)
 }

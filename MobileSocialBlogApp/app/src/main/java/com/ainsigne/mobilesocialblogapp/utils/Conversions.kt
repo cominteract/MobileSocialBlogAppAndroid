@@ -69,6 +69,30 @@ class Conversions {
             })
         }
 
+
+        fun convertToAllCalls(map : HashMap<String, Any>) : ArrayList<CallRecords>{
+            var callRecords = ArrayList<CallRecords>()
+            for(key in map.keys){
+                if(map[key] is HashMap<*,*>)
+                {
+                    val value = map[key] as HashMap<String,Any>
+                    val call = CallRecords()
+                    call.id = value["id"] as? String
+                    call.calledId = value["calledId"] as? String
+                    call.callerId = value["callerId"] as? String
+                    call.calledName = value["calledName"] as? String
+                    call.callerName = value["callerName"] as? String
+                    call.conferenceName = value["conferenceName"] as? String
+                    call.timestampStarted = value["timestampStarted"] as? String
+                    call.timestampEnded = value["timestampEnded"] as? String
+
+                    callRecords.add(call)
+                }
+            }
+            return callRecords
+        }
+
+
         fun convertToAllPosts(map : HashMap<String, Any>) : ArrayList<Posts>{
             var posts = ArrayList<Posts>()
             for(key in map.keys){

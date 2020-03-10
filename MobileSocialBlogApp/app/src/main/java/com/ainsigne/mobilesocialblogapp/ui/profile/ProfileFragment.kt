@@ -99,6 +99,9 @@ class ProfileFragment : BaseFragment(), ProfileView, PhotoRetrieval {
                 it.context?.let {context ->
                     iv_profile_photo?.let {profile ->
                         Glide.with(context).load(photo).override(32,32).into(profile)
+                        profile.setOnClickListener {
+                            main.toggleBottomSheet()
+                        }
                     }
                 }
             }
@@ -135,6 +138,7 @@ class ProfileFragment : BaseFragment(), ProfileView, PhotoRetrieval {
         user?.birthday = et_profile_birthday?.text.toString()
         user?.photoUrl = selectedPhoto
         user?.let {
+            main.toggleBottomSheet()
             presenter?.updateUser(it , selectedPhoto.isNotEmpty())
         }
     }
@@ -185,8 +189,8 @@ class ProfileFragment : BaseFragment(), ProfileView, PhotoRetrieval {
         container_profile_tv.visibility = View.INVISIBLE
     }
     private fun saveProfile(){
-        container_profile_et.visibility = View.VISIBLE
-        container_profile_tv.visibility = View.INVISIBLE
+        container_profile_et.visibility = View.INVISIBLE
+        container_profile_tv.visibility = View.VISIBLE
         var user = currentUser()
         user?.firstname = et_profile_firstname?.text.toString()
         user?.lastname = et_profile_lastname?.text.toString()

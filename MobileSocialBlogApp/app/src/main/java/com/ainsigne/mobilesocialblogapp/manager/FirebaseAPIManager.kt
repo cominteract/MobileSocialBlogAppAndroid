@@ -24,13 +24,8 @@ interface ReferencesRetrieved{
 class FirebaseAPIManager : APIManager() {
 
 
-    var ref : DatabaseReference
-    var storage :  StorageReference
-
-    init {
-        ref = FirebaseDatabase.getInstance().reference
-        storage = FirebaseStorage.getInstance().reference
-    }
+    var ref : DatabaseReference = FirebaseDatabase.getInstance().reference
+    var storage :  StorageReference = FirebaseStorage.getInstance().reference
 
 
     override fun updateById(id: String, endpoint: String, keyval: HashMap<String, Any>) {

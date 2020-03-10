@@ -1,8 +1,10 @@
 package com.ainsigne.mobilesocialblogapp.ui.chatsession
 
 
+import android.util.Log
 import com.ainsigne.mobilesocialblogapp.manager.APIManager
 import com.ainsigne.mobilesocialblogapp.manager.AuthManager
+import com.ainsigne.mobilesocialblogapp.models.CallRecords
 import com.ainsigne.mobilesocialblogapp.models.ChatMessages
 import com.ainsigne.mobilesocialblogapp.models.ChatSession
 import com.ainsigne.mobilesocialblogapp.models.Users
@@ -20,6 +22,7 @@ import kotlin.collections.ArrayList
 interface ChatSessionView {
     fun addedChatMessageUpdateView()
     fun addedChatSessionUpdateView()
+    fun receivedCallFromUpdateView(callerName : String, conferenceName : String)
     fun retrievedAllUpdateView()
     fun currentUser() : Users?
     fun userFrom(author : String) : Users?
@@ -32,17 +35,21 @@ interface ChatSessionContract {
     fun addedChatSession()
     fun addedChatMessage()
     fun retrievedAll()
+    fun receivedCallFrom(callerName : String, conferenceName : String)
 }
 
 /**
  * ChatSessionPresenter interface for implementing the ChatSessionPresenter
  **/
 interface ChatSessionPresenter {
+    fun startCall(callRecords: CallRecords)
     fun allChats() : List<ChatMessages>?
     fun allSessions() : List<ChatSession>?
+    fun allUsers() : List<Users>?
     fun sendChatWithSession(user : Users, chats : List<ChatMessages>, chatId : String, message : String)
     fun sendChat(chat : ChatMessages)
     fun sendSession(chat : ChatSession)
+    fun retrieveCalls(userId : String)
     fun retrieveAll()
     fun getUserFrom(username : String) : Users?
 }
@@ -55,6 +62,16 @@ class ChatSessionPresenterImplementation(
     view: ChatSessionView, apiManager: APIManager,
     authManager: AuthManager
 ) : ChatSessionPresenter, ChatSessionContract {
+
+    override fun startCall(callRecords: CallRecords) {
+        service.startCall(callRecords)
+    }
+
+    override fun receivedCallFrom(callerName: String, conferenceName : String) {
+        Log.d(" Call from presenter "," Call from presenter $conferenceName")
+        view.receivedCallFromUpdateView(callerName, conferenceName)
+    }
+
     override fun addedChatSession() {
         view.addedChatSessionUpdateView()
     }
@@ -73,6 +90,10 @@ class ChatSessionPresenterImplementation(
 
     override fun allSessions(): List<ChatSession>? {
         return service.allSessions?.toList()
+    }
+
+    override fun allUsers(): List<Users>? {
+        return service.allUsers?.toList()
     }
 
     override fun sendChatWithSession(
@@ -120,6 +141,11 @@ class ChatSessionPresenterImplementation(
 
     override fun sendSession(chat: ChatSession) {
         service.updateSession(chat)
+    }
+
+    override fun retrieveCalls(userId: String) {
+        Log.d("Call retrieve presenter","Call retrieve presenter $userId")
+        service.retrieveCalls(userId)
     }
 
     override fun retrieveAll() {

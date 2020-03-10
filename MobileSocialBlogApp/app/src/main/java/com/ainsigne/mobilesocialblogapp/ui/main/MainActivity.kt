@@ -45,6 +45,7 @@ interface PhotoRetrieval{
 class MainActivity : MainView, BaseActivity(){
 
 
+
     var injector = MainImplementation()
 
     var presenter: MainPresenter? = null
@@ -92,6 +93,7 @@ class MainActivity : MainView, BaseActivity(){
         val layoutParams = navigation.layoutParams
         layoutParams.height = 1
         navigation.layoutParams =  layoutParams
+        invalidateOptionsMenu()
     }
 
     fun navigateApp()
@@ -113,6 +115,8 @@ class MainActivity : MainView, BaseActivity(){
             layoutParams.height = dimensionPoint(48).toInt()
             navigation.layoutParams =  layoutParams
         }
+
+        invalidateOptionsMenu()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -174,6 +178,8 @@ class MainActivity : MainView, BaseActivity(){
         if (menu is MenuBuilder) {
             menu.setOptionalIconsVisible(true)
         }
+        menu?.findItem(R.id.action_logout)?.isVisible = !(menu is MenuBuilder && Config.getUser().isNullOrBlank())
+
         return true
     }
 

@@ -3,6 +3,7 @@ package com.ainsigne.mobilesocialblogapp.utils
 class Constants {
     companion object{
         val fake_build = "fake"
+        val calls = "calls"
         val users = "users"
         val posts = "posts"
         val chats = "chats"
