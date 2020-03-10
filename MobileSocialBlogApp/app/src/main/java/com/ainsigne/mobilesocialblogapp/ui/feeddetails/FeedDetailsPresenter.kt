@@ -19,6 +19,8 @@ interface FeedDetailsView {
     fun userFrom(author : String) : Users?
     fun upvotePost(post: Posts)
     fun downvotePost(post : Posts)
+    fun showComment(shown : Boolean,comment: Comments)
+    fun replyToComment()
 }
 
 /**

@@ -1,5 +1,6 @@
 package com.ainsigne.mobilesocialblogapp.models
 
+import android.util.Log
 import com.ainsigne.mobilesocialblogapp.utils.Constants
 import com.ainsigne.mobilesocialblogapp.utils.toStringFormat
 import java.util.*
@@ -18,7 +19,10 @@ data class Comments(var id : String? = null, var message : String? = null, var a
             comments.userId?.let { map["userId"] = it }
             comments.timestamp?.let { map["timestamp"] = it }
             comments.timestamp_from?.let { map["timestamp_from"] = it }
-            comments.replyTo?.let { map["replyTo"] = it }
+            comments.replyTo?.let {
+                Log.d(" there is a reply", " there is a reply $it")
+                map["replyTo"] = it
+            }
             comments.commentedTo?.let { map["commentedTo"] = it }
             comments.upvotes?.let { map["upvotes"] = it }
             comments.downvotes?.let { map["downvotes"] = it }

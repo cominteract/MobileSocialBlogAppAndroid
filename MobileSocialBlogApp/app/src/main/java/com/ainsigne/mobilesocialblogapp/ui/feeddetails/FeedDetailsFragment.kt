@@ -43,11 +43,14 @@ class FeedDetailsFragment : BaseFragment(), FeedDetailsView {
 
     var post : Posts? = null
 
+    var newComment : Comments? = null
+
     override fun userFrom(author: String): Users? {
         return presenter?.allUsers()?.first { it.username == author }
     }
 
     override fun addedCommentsUpdateView() {
+        newComment = null
         presenter?.retrieveAll()
     }
 
@@ -59,10 +62,6 @@ class FeedDetailsFragment : BaseFragment(), FeedDetailsView {
         presenter?.allPosts()?.filter { it.id == postId }?.let {
             post = it[0]
         }
-
-
-        var withComments = false
-
         presenter?.allComments()?.let {comments->
             if(comments.isEmpty()){
                 doAsync {
@@ -112,6 +111,32 @@ class FeedDetailsFragment : BaseFragment(), FeedDetailsView {
         }
     }
 
+    override fun replyToComment() {
+        Config.getUser()?.let { username ->
+            userFrom(username)?.let { user ->
+                newComment?.author = user.username
+                newComment?.userId = user.id
+            }
+        }
+        newComment?.message = et_details_comment.text.toString()
+        newComment?.commentedTo = post?.id
+        newComment?.commentedToPost = post
+        newComment?.downvotes = 0
+        newComment?.upvotes = 0
+        newComment?.timestamp = Date().toStringFormat()
+        newComment?.let {
+            presenter?.sendComment(it)
+        }
+        isCommenting = false
+        toggleCommenting()
+    }
+
+    override fun showComment(shown: Boolean, comment: Comments) {
+        newComment = comment
+        isCommenting = shown
+        toggleCommenting()
+    }
+
     override fun downvotePost(post: Posts) {
         Config.getUser()?.let {
             userFrom(it)?.id?.let {id->
@@ -155,22 +180,24 @@ class FeedDetailsFragment : BaseFragment(), FeedDetailsView {
             toggleCommenting()
         }
         btn_details_sendcomment.setOnClickListener {
-            val comment = Comments()
-            comment.id = Constants.getRandomString(22)
-            Config.getUser()?.let {
-                val user = presenter?.getUserFrom(it)
-                comment.author = user?.username
-                comment.userId = user?.id
-            }
-            comment.message = et_details_comment.text.toString()
-            comment.commentedTo = post?.id
-            comment.commentedToPost = post
-            comment.downvotes = 0
-            comment.upvotes = 0
-            comment.timestamp = Date().toStringFormat()
-            presenter?.sendComment(comment)
-            isCommenting = !isCommenting
-            toggleCommenting()
+            if(newComment == null){
+                val comment = Comments()
+                comment.id = Constants.getRandomString(22)
+                Config.getUser()?.let {
+                    val user = presenter?.getUserFrom(it)
+                    comment.author = user?.username
+                    comment.userId = user?.id
+                }
+                comment.message = et_details_comment.text.toString()
+                comment.commentedTo = post?.id
+                comment.commentedToPost = post
+                comment.downvotes = 0
+                comment.upvotes = 0
+                comment.timestamp = Date().toStringFormat()
+                presenter?.sendComment(comment)
+                isCommenting = !isCommenting
+                toggleCommenting()
+            }else replyToComment()
         }
         presenter?.retrieveAll()
     }

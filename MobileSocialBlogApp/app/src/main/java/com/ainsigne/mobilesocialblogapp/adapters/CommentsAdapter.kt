@@ -1,5 +1,11 @@
 package com.ainsigne.mobilesocialblogapp.adapters
 
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
+import android.os.Build
+import android.text.Spannable
+import android.text.SpannableString
+import android.text.style.ForegroundColorSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,13 +17,11 @@ import com.ainsigne.mobilesocialblogapp.models.Users
 import com.ainsigne.mobilesocialblogapp.ui.discover.DiscoverView
 import com.ainsigne.mobilesocialblogapp.ui.feed.FeedView
 import com.ainsigne.mobilesocialblogapp.ui.feeddetails.FeedDetailsView
-import com.ainsigne.mobilesocialblogapp.utils.Config
-import com.ainsigne.mobilesocialblogapp.utils.fromNow
-import com.ainsigne.mobilesocialblogapp.utils.toDate
+import com.ainsigne.mobilesocialblogapp.utils.*
 import com.bumptech.glide.Glide
 import kotlinx.android.synthetic.main.adapter_comment.view.*
-import kotlinx.android.synthetic.main.adapter_discover.view.*
 import kotlinx.android.synthetic.main.adapter_feed.view.*
+import java.util.*
 
 class CommentsAdapter(comments_ : List<Comments>, post_ : Posts, view_ : FeedDetailsView) : RecyclerView.Adapter<CommentsAdapter.FeedDataHolder>()  {
 
@@ -71,10 +75,37 @@ class CommentsAdapter(comments_ : List<Comments>, post_ : Posts, view_ : FeedDet
 //            feedView.tv_discover_location.text = user.location
 //            feedView.tv_discover_username.text = user.username
 //            Glide.with(feedView.context).load(user.photoUrl).into(feedView.iv_discover_icon)
+            var commentMessage = "${comment.message}"
+            feedView.tv_comment_message.text = commentMessage
+            comment.replyTo?.let { replyTo ->
+                comments.first { replyTo == it.id }.author?.let { author ->
+                    val spannable = SpannableString("@${author} $commentMessage")
 
-            feedView.tv_comment_message.text = comment.message
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                        spannable.setSpan(
+                            ForegroundColorSpan(feedView.context.resources.getColor(R.color.link_blue, null)),
+                            0, author.length + 1,
+                            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                    }else{
+                        spannable.setSpan(
+                            ForegroundColorSpan(feedView.context.resources.getColor(R.color.link_blue)),
+                            0, author.length + 1,
+                            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                    }
+                    feedView.tv_comment_message.text = spannable
+                }
+            }
+
             feedView.tv_comment_timestamp.text = comment.timestamp?.toDate()?.fromNow()
             feedView.tv_comment_username.text = comment.author
+            feedView.iv_comment_reply.setOnClickListener {
+                var newComment = Comments()
+                newComment.replyToComment = comment
+                newComment.replyTo = comment.id
+                newComment.id = Constants.getRandomString(22)
+                adapterView.showComment(true, newComment)
+
+            }
             comment.author?.let {
 
                 Glide.with(feedView.context).load(adapterView.userFrom(it)?.photoUrl).into(feedView.iv_comment_icon)

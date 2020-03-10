@@ -9,9 +9,10 @@
     <TextView android:id="@+id/tv_comment_username" android:layout_margin="@dimen/padding_mini"
         android:layout_width="wrap_content" app:layout_constraintTop_toTopOf="parent"
         android:layout_height="wrap_content" app:layout_constraintLeft_toRightOf="@id/iv_comment_icon" />
+
     <TextView android:id="@+id/tv_comment_message" app:layout_constraintTop_toBottomOf="@id/iv_comment_icon"
         android:layout_width="match_parent" app:layout_constraintLeft_toLeftOf="parent" android:layout_margin="@dimen/padding_mini"
-        android:background="@drawable/rounded_message" android:textColor="@color/white" android:padding="@dimen/padding_mini"
+        android:background="@drawable/rounded_comment" android:textColor="@color/dkgrey" android:padding="@dimen/padding_mini"
         android:layout_height="52dp" />
     <TextView android:id="@+id/tv_comment_timestamp" app:layout_constraintTop_toBottomOf="@id/tv_comment_message"
         android:layout_width="wrap_content" app:layout_constraintLeft_toLeftOf="parent" android:layout_margin="@dimen/padding_mini"
