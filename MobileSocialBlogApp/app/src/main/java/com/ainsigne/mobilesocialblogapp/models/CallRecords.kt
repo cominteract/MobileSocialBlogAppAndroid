@@ -7,7 +7,9 @@ data class CallRecords (var id : String? = null,
                         var calledName : String? = null,
                         var conferenceName : String? = null,
                         var timestampStarted : String? = null,
-                        var timestampEnded : String? = null
+                        var timestampEnded : String? = null,
+                        var callstate : String? = null,
+                        var endedId : String? = null
                         ){
     companion object{
         fun convertToKeyVal(callRecord : CallRecords) : HashMap<String, Any>{
@@ -20,7 +22,10 @@ data class CallRecords (var id : String? = null,
             callRecord.conferenceName?.let { map["conferenceName"] = it }
             callRecord.timestampStarted?.let { map["timestampStarted"] = it }
             callRecord.timestampEnded?.let { map["timestampEnded"] = it }
-
+            callRecord.callstate?.let { map["callstate"] = it }
+            callRecord.endedId?.let {
+                map["endedId"] = it
+            }
             return map
         }
     }

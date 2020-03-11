@@ -38,5 +38,13 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
     </LinearLayout>
-
+    <LinearLayout
+        android:orientation="horizontal"
+        android:visibility="gone"
+        android:background="@color/colorPrimaryDark"
+        android:id="@+id/container_meetview"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

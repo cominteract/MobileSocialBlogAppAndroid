@@ -43,6 +43,7 @@ class ChatSessionServices(
     var retrievedSessions = false
 
     fun startCall(call : CallRecords){
+
         callAPIManager.addCall(CallRecords.convertToKeyVal(call), completion = { err,msg ->
 
 
@@ -52,15 +53,17 @@ class ChatSessionServices(
     fun retrieveCalls(userId : String){
         val retrievedCalls = object : CallsRetrieved {
             override fun retrievedCalls(callRecords: CallRecords, msg: String) {
-                Log.d(" Call from service "," Call from service ${callRecords.conferenceName}")
                 callRecords.callerName?.let {
                     callRecords.conferenceName?.let { conferenceName ->
-                        contract?.receivedCallFrom(it, conferenceName)
+                        contract?.receivedCallFrom(callRecords)
                     }
                 }
             }
+
+            override fun endedCalls(callRecords: CallRecords, msg: String) {
+                contract?.endedCall(callRecords)
+            }
         }
-        Log.d("Call retrieve service","Call retrieve service $userId")
         callAPIManager.retrieveIncomingCall(userId, retrievedCalls)
     }
 

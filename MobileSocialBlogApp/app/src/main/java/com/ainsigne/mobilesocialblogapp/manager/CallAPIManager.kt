@@ -32,18 +32,34 @@ class CallAPIManager {
             override fun onDataChange(snapshots: DataSnapshot){
                 if(snapshots.value != null && snapshots.value is HashMap<*,*>){
 
-                    Log.d(" Call from manager"," Call from manager ${snapshots.value}")
-                    var callsForUser = Conversions.convertToAllCalls((snapshots.value as HashMap<String,Any>)).filter {
-                        it.calledId == userId && it.timestampEnded == null
-                    }.first()
-                    callsRetrieved.retrievedCalls(callsForUser,"")
+                    if(!Conversions.convertToAllCalls((snapshots.value as HashMap<String,Any>)).isNullOrEmpty()){
+                        val callRecords = Conversions.convertToAllCalls((snapshots.value as HashMap<String,Any>))
 
+                        var callsForUser = callRecords.filter {
+                            it.calledId == userId && it.callstate == Constants.CALLSTARTED
+                        }
+                        var callsEnded = callRecords.filter {
+                            it.endedId == userId && it.callstate == Constants.CALLENDED
+                        }
+
+                        if(!callsForUser.isNullOrEmpty()){
+                            Log.d(" Call from manager"," Call Retrieved from manager ${callRecords[0].calledId} $userId")
+                            callsRetrieved.retrievedCalls(callsForUser.first(),"")
+                        }
+
+                        if(!callsEnded.isNullOrEmpty()){
+                            Log.d(" Leaving "," Leaving from call api manager ")
+                            //Log.d(" Call from manager"," Call Ended from manager ${callRecords[0].calledId} $userId")
+                            callsRetrieved.endedCalls(callsEnded.first(),"")
+                        }
+
+                    }
                 } else {
                     Log.d(" Call from manager"," Call from manager ${snapshots.value}")
                 }
             }
         }
-        Log.d(" Call from manager"," Call from manager retrieving")
+
         ref.child(Constants.calls).addValueEventListener(eventListener)
     }
 }

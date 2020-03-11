@@ -18,6 +18,7 @@ interface UsersRetrieved{
 
 interface CallsRetrieved{
     fun retrievedCalls(callRecords : CallRecords , msg : String)
+    fun endedCalls(callRecords : CallRecords , msg : String)
 }
 
 interface PostsRetrieved{

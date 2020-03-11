@@ -85,7 +85,8 @@ class Conversions {
                     call.conferenceName = value["conferenceName"] as? String
                     call.timestampStarted = value["timestampStarted"] as? String
                     call.timestampEnded = value["timestampEnded"] as? String
-
+                    call.callstate = value["callstate"] as? String
+                    call.endedId = value["endedId"] as? String
                     callRecords.add(call)
                 }
             }

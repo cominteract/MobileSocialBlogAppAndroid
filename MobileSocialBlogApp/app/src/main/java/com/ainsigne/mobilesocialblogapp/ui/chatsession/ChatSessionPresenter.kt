@@ -22,7 +22,8 @@ import kotlin.collections.ArrayList
 interface ChatSessionView {
     fun addedChatMessageUpdateView()
     fun addedChatSessionUpdateView()
-    fun receivedCallFromUpdateView(callerName : String, conferenceName : String)
+    fun receivedCallFromUpdateView(callRecords: CallRecords)
+    fun endedCallUpdateView(callRecords: CallRecords)
     fun retrievedAllUpdateView()
     fun currentUser() : Users?
     fun userFrom(author : String) : Users?
@@ -35,7 +36,8 @@ interface ChatSessionContract {
     fun addedChatSession()
     fun addedChatMessage()
     fun retrievedAll()
-    fun receivedCallFrom(callerName : String, conferenceName : String)
+    fun receivedCallFrom(callRecords: CallRecords)
+    fun endedCall(callRecords: CallRecords)
 }
 
 /**
@@ -63,14 +65,15 @@ class ChatSessionPresenterImplementation(
     authManager: AuthManager
 ) : ChatSessionPresenter, ChatSessionContract {
 
+    override fun endedCall(callRecords: CallRecords) {
+        view.endedCallUpdateView(callRecords)
+    }
+
     override fun startCall(callRecords: CallRecords) {
         service.startCall(callRecords)
     }
 
-    override fun receivedCallFrom(callerName: String, conferenceName : String) {
-        Log.d(" Call from presenter "," Call from presenter $conferenceName")
-        view.receivedCallFromUpdateView(callerName, conferenceName)
-    }
+
 
     override fun addedChatSession() {
         view.addedChatSessionUpdateView()
@@ -82,6 +85,10 @@ class ChatSessionPresenterImplementation(
 
     override fun retrievedAll() {
         view.retrievedAllUpdateView()
+    }
+
+    override fun receivedCallFrom(callRecords: CallRecords) {
+        view.receivedCallFromUpdateView(callRecords)
     }
 
     override fun allChats(): List<ChatMessages>? {

@@ -26,11 +26,13 @@ import com.ainsigne.mobilesocialblogapp.utils.Config
 import com.ainsigne.mobilesocialblogapp.utils.UINavigation
 import com.ainsigne.mobilesocialblogapp.utils.toStringFormat
 import com.ainsigne.mobilesocialblogapp.utils.toStringFull
+import com.facebook.react.modules.core.PermissionListener
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.bottom_sheet.*
 import kotlinx.android.synthetic.main.content_main.*
+import org.jitsi.meet.sdk.JitsiMeetActivityInterface
 import pl.aprilapps.easyphotopicker.EasyImage
 import java.io.File
 import java.io.InputStream
@@ -42,7 +44,7 @@ interface PhotoRetrieval{
 
 }
 
-class MainActivity : MainView, BaseActivity(){
+class MainActivity : MainView, BaseActivity(), JitsiMeetActivityInterface {
 
 
 
@@ -263,6 +265,10 @@ class MainActivity : MainView, BaseActivity(){
     }
 
     override fun tokenRefreshedUpdateView() {
+
+    }
+
+    override fun requestPermissions(p0: Array<out String>?, p1: Int, p2: PermissionListener?) {
 
     }
 }

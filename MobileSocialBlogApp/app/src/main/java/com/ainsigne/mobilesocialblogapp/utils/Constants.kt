@@ -9,7 +9,9 @@ class Constants {
         val chats = "chats"
         val comments = "comments"
         val sessions = "sessions"
-
+        var CALLSTARTED = "CallStarted"
+        var CALLENDED = "CallEnded"
+        var CALLONGOING = "CallOngoing"
         val defaultposturl = "https://blog.us.playstation.com/tachyon/2019/11/49118747543_df228ca2dd_k.jpg?w=1280"
 
         val defaultuserurl = "https://alumni.crg.eu/sites/default/files/default_images/default-picture_0_0.png"
