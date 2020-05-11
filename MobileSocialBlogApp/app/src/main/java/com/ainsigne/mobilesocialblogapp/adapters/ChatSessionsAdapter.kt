@@ -57,9 +57,6 @@ class ChatSessionsAdapter(chats_ : List<ChatSession>, view_ : ChatView) : Recycl
                 }
             }
             chat.author?.let { author ->
-
-
-
                 Glide.with(feedView.context).load(adapterView.userFrom(author)?.photoUrl).into(feedView.iv_chatfriend_icon)
             }
 

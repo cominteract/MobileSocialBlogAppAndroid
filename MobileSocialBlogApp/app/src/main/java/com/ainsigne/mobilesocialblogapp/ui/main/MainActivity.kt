@@ -104,18 +104,14 @@ class MainActivity : MainView, BaseActivity(), JitsiMeetActivityInterface {
 
             loadFragment(UINavigation.signup)
             //navigation.visibility = View.GONE
-            val layoutParams = navigation.layoutParams
-            layoutParams.height = 1
-            navigation.layoutParams =  layoutParams
+            hideTab()
 
         }
         else{
 
             loadFragment(UINavigation.feed)
 //            navigation.visibility = View.VISIBLE
-            val layoutParams = navigation.layoutParams
-            layoutParams.height = dimensionPoint(48).toInt()
-            navigation.layoutParams =  layoutParams
+            showTab()
         }
 
         invalidateOptionsMenu()
@@ -159,6 +155,18 @@ class MainActivity : MainView, BaseActivity(), JitsiMeetActivityInterface {
         navigation.setOnNavigationItemSelectedListener(onNavigationItemSelectedListener)
         navigateApp()
         setSupportActionBar(toolbar)
+    }
+
+    fun hideTab(){
+        val layoutParams = navigation.layoutParams
+        layoutParams.height = 1
+        navigation.layoutParams =  layoutParams
+    }
+
+    fun showTab(){
+        val layoutParams = navigation.layoutParams
+        layoutParams.height = dimensionPoint(48).toInt()
+        navigation.layoutParams =  layoutParams
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {

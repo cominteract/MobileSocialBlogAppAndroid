@@ -91,6 +91,7 @@ class ChatSessionFragment : BaseFragment(), ChatSessionView {
                 container_meetview.visibility = View.VISIBLE
                 rv_chatsession.visibility = View.GONE
                 container_chatsession_send.visibility = View.GONE
+                main.hideTab()
                 meetView?.join(options)
             }
         }
@@ -103,6 +104,7 @@ class ChatSessionFragment : BaseFragment(), ChatSessionView {
                 container_meetview.visibility = View.GONE
                 rv_chatsession.visibility = View.VISIBLE
                 container_chatsession_send.visibility = View.VISIBLE
+                main.showTab()
             }
         }
     }
