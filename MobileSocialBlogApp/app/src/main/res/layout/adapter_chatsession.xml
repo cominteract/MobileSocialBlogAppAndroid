@@ -11,7 +11,10 @@
         android:layout_width="wrap_content" app:layout_constraintTop_toTopOf="parent" android:layout_margin="@dimen/padding_mini"
         android:layout_height="wrap_content" app:layout_constraintLeft_toRightOf="@id/iv_chatsession_icon" />
 
-    <TextView android:id="@+id/tv_chatsession_message" android:padding="@dimen/padding_feed"
+    <TextView android:id="@+id/tv_chatsession_message" android:paddingLeft="@dimen/padding_feed"
+        android:paddingRight="@dimen/padding_feed"
+        android:paddingBottom="@dimen/activity_horizontal_margin"
+        android:paddingTop="@dimen/activity_horizontal_margin"
         android:textColor="@color/white" android:background="@drawable/rounded_message" android:layout_margin="@dimen/padding_mini"
         app:layout_constraintTop_toBottomOf="@id/iv_chatsession_icon"
         android:layout_width="match_parent" app:layout_constraintLeft_toLeftOf="parent"

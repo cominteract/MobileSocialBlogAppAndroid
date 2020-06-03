@@ -11,15 +11,20 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.ainsigne.mobilesocialblogapp.R
 import com.ainsigne.mobilesocialblogapp.adapters.ChatMessagesAdapter
 import com.ainsigne.mobilesocialblogapp.base.BaseFragment
-import com.ainsigne.mobilesocialblogapp.models.CallRecords
-import com.ainsigne.mobilesocialblogapp.models.ChatMessages
-import com.ainsigne.mobilesocialblogapp.models.ChatSession
-import com.ainsigne.mobilesocialblogapp.models.Users
+import com.ainsigne.mobilesocialblogapp.models.*
+import com.ainsigne.mobilesocialblogapp.services.FCMApi
 import com.ainsigne.mobilesocialblogapp.ui.main.MainActivity
 import com.ainsigne.mobilesocialblogapp.utils.Config
 import com.ainsigne.mobilesocialblogapp.utils.Constants
 import com.ainsigne.mobilesocialblogapp.utils.toStringFormat
+import com.google.firebase.messaging.FirebaseMessaging
+import com.google.firebase.messaging.RemoteMessage
+import kotlinx.android.synthetic.main.content_main.*
 import kotlinx.android.synthetic.main.fragment_chat_session.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.IO
+import kotlinx.coroutines.launch
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
 import org.jitsi.meet.sdk.*
@@ -47,6 +52,7 @@ class ChatSessionFragment : BaseFragment(), ChatSessionView {
 
     lateinit var main : MainActivity
 
+    var fcmApi = FCMApi()
 
     override fun currentUser(): Users? {
         Config.getUser()?.let {
@@ -73,6 +79,7 @@ class ChatSessionFragment : BaseFragment(), ChatSessionView {
             this.ongoingCall = callRecords
         }
         if (conferenceName.isNotEmpty() && callRecords.callstate == Constants.CALLSTARTED) {
+            Log.d(" Call update started "," Call update started ")
             callRecords.callstate = Constants.CALLONGOING
             presenter?.startCall(callRecords)
             ongoingCallView()
@@ -81,20 +88,45 @@ class ChatSessionFragment : BaseFragment(), ChatSessionView {
     }
 
     private fun ongoingCallView(){
-
+        Log.d(" Ongoing call "," Ongoing call ")
         doAsync {
             uiThread {
-                val options =
-                    JitsiMeetConferenceOptions.Builder()
-                        .setRoom(conferenceName)
-                        .build()
-                container_meetview.visibility = View.VISIBLE
+
+                container_meetview.visibility = View.GONE
                 rv_chatsession.visibility = View.GONE
                 container_chatsession_send.visibility = View.GONE
+                container_calling.visibility = View.VISIBLE
+                txt_calling.setText("${ongoingCall?.callerName} calling")
+                btn_accept_call.setOnClickListener { acceptCall() }
+                btn_reject_call.setOnClickListener { rejectCall() }
                 main.hideTab()
-                meetView?.join(options)
+
             }
         }
+    }
+
+    private fun acceptedCallView()
+    {
+        container_meetview.visibility = View.VISIBLE
+        rv_chatsession.visibility = View.GONE
+        container_chatsession_send.visibility = View.GONE
+        container_calling.visibility = View.GONE
+        main.hideTab()
+    }
+
+    private fun rejectCall(){
+        endCall()
+    }
+
+    private fun acceptCall(){
+        Log.d(" Accepting call "," Accepting call ")
+        val options =
+            JitsiMeetConferenceOptions.Builder()
+                .setRoom(conferenceName)
+                .build()
+        acceptedCallView()
+        meetView?.join(options)
+
     }
 
     private fun callEndedView(){
@@ -104,6 +136,7 @@ class ChatSessionFragment : BaseFragment(), ChatSessionView {
                 container_meetview.visibility = View.GONE
                 rv_chatsession.visibility = View.VISIBLE
                 container_chatsession_send.visibility = View.VISIBLE
+                container_calling.visibility = View.GONE
                 main.showTab()
             }
         }
@@ -117,6 +150,18 @@ class ChatSessionFragment : BaseFragment(), ChatSessionView {
         presenter?.retrieveAll()
     }
 
+    private fun endCall(){
+        ongoingCall?.let {
+            it.callstate = Constants.CALLENDED
+            it.timestampEnded = Date().toStringFormat()
+            it.endedId = chatId
+            presenter?.startCall(it)
+            callEndedView()
+
+        }
+        ongoingCall = null
+    }
+
     private fun initializeJitsi(){
         meetView?.listener = object : JitsiMeetViewListener {
             fun onConferenceFailed(data: Map<String, Any>) {
@@ -126,15 +171,7 @@ class ChatSessionFragment : BaseFragment(), ChatSessionView {
             override fun onConferenceTerminated(p0: MutableMap<String, Any>?) {
                 Log.d(" Jitsi Terminated "," Jitsi Terminated ")
                 Log.d(" Leaving "," Leaving from same ")
-                ongoingCall?.let {
-                    it.callstate = Constants.CALLENDED
-                    it.timestampEnded = Date().toStringFormat()
-                    it.endedId = chatId
-                    presenter?.startCall(it)
-                    callEndedView()
-
-                }
-                ongoingCall = null
+                endCall()
             }
             override fun onConferenceJoined(data: Map<String, Any>) {
                 Log.d(" Jitsi Joined "," Jitsi Joined ")
@@ -198,26 +235,49 @@ class ChatSessionFragment : BaseFragment(), ChatSessionView {
                     }
                 }
                 iv_chat_video.setOnClickListener {
-                    user?.id.let { id ->
-                        conferenceName = "${id}_$chatId"
+                CoroutineScope(Dispatchers.IO).launch {
+                    //nexus "dfPG1HmcMAE:APA91bHtL9Obqvis13_p-H1I8ky64O8kaIxK_3x5B0E0AmZz01TAubzK8m_8hI5djvvHdW2esiBsoc1I0oWoBv0UkqfKyIm4In3y4lECBF1aogjMb5K9dgzvSsd4BlYLjnmobysAGRGC"
+                    //pixel "eYUXnjVQEyA:APA91bE4WMs407H57K2i7C2Z8rwX4f2PMsktJGif_FSvWr15WPCeLaAAT6dm1tKwsRfnIeI8VdcV7s4J8_85zRh8DXR9ViKJrxFpa_H7WUFf4WtXc3reKvXaWF1BcocrFefIXcJVUNxb"
+                    val response = fcmApi.webservice.sendMessage(
+                        BodyRequest(
+                            "dfPG1HmcMAE:APA91bHtL9Obqvis13_p-H1I8ky64O8kaIxK_3x5B0E0AmZz01TAubzK8m_8hI5djvvHdW2esiBsoc1I0oWoBv0UkqfKyIm4In3y4lECBF1aogjMb5K9dgzvSsd4BlYLjnmobysAGRGC"
+                            , "high", BodyData("LS3he0EtKMigdA8KuoNUZ7", "Philippines")
+                        )
+                    )
+                    if (response.isSuccessful) {
+                        user?.id.let { id ->
+                            conferenceName = "${id}_$chatId"
+                        }
+                        ongoingCall = CallRecords()
+                        ongoingCall?.id = Constants.getRandomString(19)
+                        ongoingCall?.callerId = user?.id
+                        ongoingCall?.callerName = user?.username
+                        ongoingCall?.calledId = chatId
+                        if (chats.first().author == user?.username)
+                            ongoingCall?.calledName = chats.first().replyTo
+                        else
+                            ongoingCall?.calledName = chats.first().author
+                        ongoingCall?.conferenceName = conferenceName
+                        ongoingCall?.timestampStarted = Date().toStringFormat()
+                        ongoingCall?.callstate = Constants.CALLSTARTED
+                        ongoingCall?.let { ongoingCall ->
+                            presenter?.startCall(ongoingCall)
+                        }
+                        if (conferenceName.isNotEmpty()) {
+                            doAsync {
+                                uiThread {
+                                    acceptCall()
+                                }
+                            }
+                        }
+                        Log.d(" Success send message ", " Success send message ")
                     }
-                    ongoingCall = CallRecords()
-                    ongoingCall?.id = Constants.getRandomString(19)
-                    ongoingCall?.callerId = user?.id
-                    ongoingCall?.callerName = user?.username
-                    ongoingCall?.calledId = chatId
-                    if(chats.first().author == user?.username)
-                        ongoingCall?.calledName = chats.first().replyTo
                     else
-                        ongoingCall?.calledName = chats.first().author
-                    ongoingCall?.conferenceName = conferenceName
-                    ongoingCall?.timestampStarted = Date().toStringFormat()
-                    ongoingCall?.callstate = Constants.CALLSTARTED
-                    ongoingCall?.let { ongoingCall ->
-                        presenter?.startCall(ongoingCall)
-                    }
-                    if (conferenceName.isNotEmpty())
-                        ongoingCallView()
+                        Log.d(" Failure send message "," Failure send message ${response.message()} ")
+                }
+
+
+//
                 }
             }
         }
@@ -227,10 +287,11 @@ class ChatSessionFragment : BaseFragment(), ChatSessionView {
         initializeJitsiServer()
         Config.getUser()?.let {username ->
             val user = presenter?.getUserFrom(username)
-            presenter?.allChats()?.filter {message ->
+            val filteredChat = presenter?.allChats()?.filter {message ->
                 (message.userId == user?.id && message.replyTo == chatId) ||
                         (message.userId == chatId && message.replyTo == user?.id)
-            }?.let { chats ->
+            }
+            filteredChat?.let { chats ->
                 val layoutManager = LinearLayoutManager(this.context)
                 rv_chatsession.layoutManager = layoutManager
                 initializeStartCall(user, chats)

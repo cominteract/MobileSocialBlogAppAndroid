@@ -6,6 +6,7 @@ import com.ainsigne.mobilesocialblogapp.manager.APIManager
 import com.ainsigne.mobilesocialblogapp.manager.AuthManager
 import com.ainsigne.mobilesocialblogapp.manager.UsersRetrieved
 import com.ainsigne.mobilesocialblogapp.models.Users
+import com.ainsigne.mobilesocialblogapp.utils.Config
 import com.ainsigne.mobilesocialblogapp.utils.Constants
 import java.io.File
 
@@ -32,8 +33,15 @@ class SignupServices(
 
     var allUsers : ArrayList<Users>? = null
 
+    fun retrieveTokens(){
+        apiManager.retrieveAllTokens { error, msg ->
+            
+        }
+    }
+
     fun usernameExists(username: String) : Boolean{
         allUsers?.filter { it.username == username }?.let {
+
             return it.isNotEmpty()
         }
         return false
@@ -69,6 +77,9 @@ class SignupServices(
             if(err == null)
                 contract?.addedUser()
         })
+
+
+
     }
 
     fun passwordCorrect(username : String, password : String) : Boolean{
@@ -90,8 +101,10 @@ class SignupServices(
             override fun retrievedUsers(users: ArrayList<Users>?, msg: String) {
                 allUsers = users
                 contract?.retrievedAll()
+
             }
         }
         apiManager.retrieveAllUsers(usersRetrieved)
+
     }
 }

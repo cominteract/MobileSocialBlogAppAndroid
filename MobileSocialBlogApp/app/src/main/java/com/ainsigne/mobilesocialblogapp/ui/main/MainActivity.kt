@@ -1,16 +1,19 @@
 package com.ainsigne.mobilesocialblogapp.ui.main
 
+import android.annotation.SuppressLint
 import android.app.Activity
+import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.Intent.FLAG_GRANT_READ_URI_PERMISSION
 import android.content.Intent.FLAG_GRANT_WRITE_URI_PERMISSION
+import android.content.IntentFilter
 import android.database.Cursor
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
-import android.os.Environment
+import android.os.PersistableBundle
 import android.provider.MediaStore
 import android.util.Log
 import android.view.Menu
@@ -18,35 +21,31 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.LinearLayout
 import androidx.appcompat.view.menu.MenuBuilder
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.FileProvider
 import com.ainsigne.mobilesocialblogapp.R
 import com.ainsigne.mobilesocialblogapp.base.BaseActivity
 import com.ainsigne.mobilesocialblogapp.utils.Config
 import com.ainsigne.mobilesocialblogapp.utils.UINavigation
 import com.ainsigne.mobilesocialblogapp.utils.toStringFormat
-import com.ainsigne.mobilesocialblogapp.utils.toStringFull
 import com.facebook.react.modules.core.PermissionListener
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.bottom_sheet.*
 import kotlinx.android.synthetic.main.content_main.*
+import org.jetbrains.anko.doAsync
+import org.jetbrains.anko.uiThread
 import org.jitsi.meet.sdk.JitsiMeetActivityInterface
 import pl.aprilapps.easyphotopicker.EasyImage
 import java.io.File
-import java.io.InputStream
 import java.util.*
 
 
 interface PhotoRetrieval{
     fun photoRetrieved(uriString : String?, bitmap : Bitmap?)
-
 }
 
 class MainActivity : MainView, BaseActivity(), JitsiMeetActivityInterface {
-
-
 
     var injector = MainImplementation()
 
@@ -60,7 +59,6 @@ class MainActivity : MainView, BaseActivity(), JitsiMeetActivityInterface {
 
     var sheetCallback = object : BottomSheetBehavior.BottomSheetCallback() {
         override fun onSlide(bottomSheet: View, slideOffset: Float) {
-
 
         }
 
@@ -90,6 +88,7 @@ class MainActivity : MainView, BaseActivity(), JitsiMeetActivityInterface {
 
     fun navigateOpt()
     {
+
         loadFragment(UINavigation.optsignup)
         //navigation.visibility = View.GONE
         val layoutParams = navigation.layoutParams
@@ -100,28 +99,32 @@ class MainActivity : MainView, BaseActivity(), JitsiMeetActivityInterface {
 
     fun navigateApp()
     {
+
         if(Config.getUser().isNullOrEmpty()){
-
             loadFragment(UINavigation.signup)
-            //navigation.visibility = View.GONE
             hideTab()
-
         }
         else{
-
+            presenter?.refreshToken()
             loadFragment(UINavigation.feed)
-//            navigation.visibility = View.VISIBLE
             showTab()
         }
+        invalidateOptionsMenu()
+    }
+    fun navigateChat()
+    {
+        presenter?.refreshToken()
 
+        loadFragment(UINavigation.session)
+        showTab()
         invalidateOptionsMenu()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        injector.inject(this)
         Config.context = this
-
         easyImage = EasyImage.Builder(this)
                 .setCopyImagesToPublicGalleryFolder(false) // Sets the name for images stored if setCopyImagesToPublicGalleryFolder = true
                 .setFolderName("images") // Allow multiple picking
@@ -142,25 +145,38 @@ class MainActivity : MainView, BaseActivity(), JitsiMeetActivityInterface {
             startActivityForResult(galleryIntent, PICK_FROM_GALLERY)
         }
         tv_takephoto.setOnClickListener {
-
             val camera = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
             photoTaken = "img_${Date().toStringFormat()}.jpg"
             camera.putExtra(MediaStore.EXTRA_OUTPUT, getPhotoFile(this))
             camera.addFlags(FLAG_GRANT_READ_URI_PERMISSION)
             camera.addFlags(FLAG_GRANT_WRITE_URI_PERMISSION)
-
             startActivityForResult(camera, PICK_FROM_CAMERA)
         }
-
         navigation.setOnNavigationItemSelectedListener(onNavigationItemSelectedListener)
-        navigateApp()
+        if(intent.extras != null){
+            if (intent.extras.containsKey("calledId"))
+                    navigateChat()
+        }
+        else{
+            navigateApp()
+        }
+
         setSupportActionBar(toolbar)
+
+
     }
+
+    override fun onSaveInstanceState(outState: Bundle?, outPersistentState: PersistableBundle?) {
+        super.onSaveInstanceState(outState, outPersistentState)
+
+    }
+
 
     fun hideTab(){
         val layoutParams = navigation.layoutParams
         layoutParams.height = 1
         navigation.layoutParams =  layoutParams
+
     }
 
     fun showTab(){
@@ -172,24 +188,22 @@ class MainActivity : MainView, BaseActivity(), JitsiMeetActivityInterface {
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         when (item?.itemId){
             R.id.action_logout -> {
-                Config.updateUser("")
-                Config.user = null
-                navigateApp()
+                presenter?.deleteToken()
+
                 return true
             }
         }
         return super.onOptionsItemSelected(item)
     }
 
+    @SuppressLint("RestrictedApi")
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         val inflater = menuInflater
         inflater.inflate(R.menu.menu_overflow_list, menu)
-
         if (menu is MenuBuilder) {
             menu.setOptionalIconsVisible(true)
         }
         menu?.findItem(R.id.action_logout)?.isVisible = !(menu is MenuBuilder && Config.getUser().isNullOrBlank())
-
         return true
     }
 
@@ -272,11 +286,42 @@ class MainActivity : MainView, BaseActivity(), JitsiMeetActivityInterface {
         }
     }
 
-    override fun tokenRefreshedUpdateView() {
+    override fun tokenDeletedUpdateView() {
+        Config.user = null
+        Config.updateUser("")
+        Config.updateUserId("")
+        navigateApp()
+    }
 
+    override fun tokenRefreshedUpdateView() {
+        Log.d(" Token Refreshed "," Token Refreshed ")
     }
 
     override fun requestPermissions(p0: Array<out String>?, p1: Int, p2: PermissionListener?) {
+
+    }
+    var mReceiver: BroadcastReceiver? = object : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            Log.d(" Receiving broadcast "," Receiving broadcast ")
+            intent?.let {myintent ->
+                if(intent.extras.keySet().contains("calledId")){
+                    navigateChat()
+                }
+            }
+        }
+    }
+
+    var mIntentFilter: IntentFilter = IntentFilter("OPEN_NEW_ACTIVITY")
+
+    override fun onResume() {
+        super.onResume()
+        registerReceiver(mReceiver, mIntentFilter)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        unregisterReceiver(mReceiver)
+        mReceiver = null
 
     }
 }

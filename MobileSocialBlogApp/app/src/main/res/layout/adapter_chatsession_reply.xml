@@ -12,7 +12,10 @@
         android:layout_height="wrap_content" app:layout_constraintRight_toLeftOf="@id/iv_chatreply_icon" />
 
     <TextView android:id="@+id/tv_chatreply_message"
-        android:padding="@dimen/padding_feed"
+        android:paddingLeft="@dimen/padding_feed"
+        android:paddingRight="@dimen/padding_feed"
+        android:paddingBottom="@dimen/activity_horizontal_margin"
+        android:paddingTop="@dimen/activity_horizontal_margin"
         android:layout_margin="@dimen/padding_mini"
         android:textColor="@color/white" android:background="@drawable/rounded_reply"
         app:layout_constraintTop_toBottomOf="@id/iv_chatreply_icon"

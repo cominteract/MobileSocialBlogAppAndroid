@@ -61,6 +61,7 @@ class ChatSessionServices(
             }
 
             override fun endedCalls(callRecords: CallRecords, msg: String) {
+                Log.d("Endedcall from retrieve"," Endedcall from retrieve ")
                 contract?.endedCall(callRecords)
             }
         }
@@ -83,6 +84,14 @@ class ChatSessionServices(
             if(err == null)
                 contract?.addedChatSession()
         })
+    }
+
+    fun getUserFromId(userId : String) : Users?{
+        allUsers?.filter { it.id == userId }?.let {
+            if(it.isNotEmpty())
+                return it[0]
+        }
+        return null
     }
 
 

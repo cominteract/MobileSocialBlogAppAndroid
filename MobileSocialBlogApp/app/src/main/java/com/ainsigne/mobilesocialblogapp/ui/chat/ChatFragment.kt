@@ -31,6 +31,7 @@ import org.jetbrains.anko.uiThread
 class ChatFragment : BaseFragment(), ChatView {
 
     override fun navigateToSession(chatId: String) {
+        Log.d(" Navigating to user "," Navigating to user $chatId")
         val bundle = Bundle()
         bundle.putString("chatId", chatId)
         main.addOnTopWithBundle(UINavigation.session, bundle)
@@ -101,6 +102,7 @@ class ChatFragment : BaseFragment(), ChatView {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         presenter?.retrieveAll()
+        main.showTab()
     }
 
 

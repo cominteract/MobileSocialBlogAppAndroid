@@ -28,6 +28,37 @@ class FirebaseAPIManager : APIManager() {
     var storage :  StorageReference = FirebaseStorage.getInstance().reference
 
 
+    override fun deleteToken(completion: (Error?, String) -> Unit) {
+
+        var keyval = HashMap<String,String>()
+        keyval.put("tokenString", "")
+        Config.getUser()?.let { username ->
+            ref.child(Constants.tokens).child(username).setValue(
+                keyval
+            ) { err, ref ->
+                if (err != null)
+                    completion(null, "Successfully deleted token for $username")
+                else
+                    completion(err, "Failure deleted token for $username")
+            }
+        }
+    }
+
+    override fun updateToken(username : String, token: String, completion: (Error?, String) -> Unit) {
+        var keyval = HashMap<String,String>()
+        keyval.put("tokenString", token)
+        Config.getUser()?.let {username ->
+            ref.child(Constants.tokens).child(username).setValue(keyval
+            ) { err, ref ->
+                if (err != null)
+                    completion(null, "Successfully registered token ${keyval["tokenString"]}")
+                else
+                    completion(err, "Failure registered token ${keyval["tokenString"]}")
+            }
+        }
+
+    }
+
     override fun updateById(id: String, endpoint: String, keyval: HashMap<String, Any>) {
         ref.child(endpoint).child(id).setValue(keyval)
     }
@@ -255,6 +286,58 @@ class FirebaseAPIManager : APIManager() {
         ref.child(Constants.chats).addListenerForSingleValueEvent(eventListener)
 
     }
+
+
+    override fun retrieveAllTokens(completion: (Error?, String) -> Unit) {
+
+        Config.getToken()?.let { token ->
+            var keyval = HashMap<String,String>()
+            keyval.put("tokenString", token)
+            Config.getUser()?.let { username ->
+                ref.child(Constants.tokens).child(username).setValue(keyval){ err, ref ->
+                    if (err != null) {
+                        error(" $token not added successfully")
+                        Log.d(" Error updating token ", " Error updating token ")
+                    }
+                    else {
+
+                        completion(null, "Successfully added ${token}")
+                        refreshTokens(token, username)
+                    }
+                }
+            }
+        }
+    }
+
+    fun refreshTokens(token: String, username : String){
+        ref.child(Constants.tokens).addListenerForSingleValueEvent(object : ValueEventListener{
+            override fun onCancelled(p0: DatabaseError) {
+
+            }
+
+            override fun onDataChange(snapshots: DataSnapshot) {
+                if(snapshots.value != null && snapshots.value is HashMap<*,*>){
+                    val usersFromToken = snapshots.value as HashMap<*,*>
+                    val usersWithToken = ArrayList<String>()
+                    for ((key, value) in usersFromToken) {
+                        if(key is String && value is String && key != username && value == token)
+                            usersWithToken.add(key)
+                    }
+                    for(usernames in usersWithToken){
+                        ref.child(Constants.tokens).child(usernames).setValue(""){ err, ref ->
+                            if (err != null)
+                                Log.d(" Error updating token "," Error updating token ")
+                            else
+                                Log.d("Success replacing token", " Success replacing old tokens $token")
+                        }
+                    }
+                }else{
+                    Log.d(" There is none "," There is none ")
+                }
+            }
+        })
+    }
+
 
     override fun retrieveAllChatSession(chatsRetrieved: ChatSessionRetrieved) {
         ref.child(Constants.sessions).addListenerForSingleValueEvent(object : ValueEventListener{

@@ -41,6 +41,19 @@ interface ChatMessagesRetrieved{
  * serves as an abstract class for the api protocol and its implementation
  **/
 open class APIManager : APIInterface {
+
+    override fun deleteToken(completion: (Error?, String) -> Unit) {
+
+    }
+
+    override fun retrieveAllTokens(completion: (Error?, String) -> Unit) {
+
+    }
+
+    override fun updateToken(username : String, token: String, completion: (Error?, String) -> Unit){
+
+    }
+
     override fun updateById(id: String, endpoint: String, keyval: HashMap<String, Any>) {
 
     }
@@ -72,6 +85,8 @@ open class APIManager : APIInterface {
     ) {
 
     }
+
+
 
     override fun getUser(username: String, userConversion: UsersConversion) {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.

@@ -12,6 +12,17 @@ import java.io.File
  **/
 class MockAPIManager : APIManager() {
 
+    override fun deleteToken(completion: (Error?, String) -> Unit) {
+
+    }
+
+    override fun retrieveAllTokens(completion: (Error?, String) -> Unit) {
+
+    }
+
+    override fun updateToken(username : String, token: String, completion: (Error?, String) -> Unit){
+
+    }
 
     override fun updateById(id: String, endpoint: String, keyval: HashMap<String, Any>) {
 

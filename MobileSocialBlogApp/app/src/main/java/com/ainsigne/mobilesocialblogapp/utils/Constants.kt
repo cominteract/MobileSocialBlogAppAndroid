@@ -5,6 +5,7 @@ class Constants {
         val fake_build = "fake"
         val calls = "calls"
         val users = "users"
+        val tokens = "tokens"
         val posts = "posts"
         val chats = "chats"
         val comments = "comments"

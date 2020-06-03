@@ -12,6 +12,10 @@ import java.io.File
 /// the template used in implementing the api
 interface APIInterface {
 
+    fun deleteToken(completion: (Error?, String) -> Unit)
+
+    fun updateToken(username : String, token: String, completion: (Error?, String) -> Unit)
+
     fun updateById(id : String, endpoint : String, keyval : HashMap<String,Any>)
 
     fun addUser(keyval: Map<String,Any?>, completion: (Error?,String) -> Unit)
@@ -33,6 +37,8 @@ interface APIInterface {
     fun userExists(username : String, userConversion : UsersConversion)
 
     fun postExists(id : String, postConversion : PostsConversion)
+
+    fun retrieveAllTokens(completion: (Error?, String) -> Unit)
 
     fun retrieveAllUsers(usersRetrieved : UsersRetrieved)
 

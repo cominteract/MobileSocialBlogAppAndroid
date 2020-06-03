@@ -36,4 +36,18 @@ class MainServices(
         return authManager.isLogged()
     }
 
+    fun deleteTokens(){
+        apiManager.deleteToken { error, msg ->
+            if (error == null)
+                contract?.tokenDeleted()
+        }
+    }
+
+    fun retrieveTokens(){
+        apiManager.retrieveAllTokens{ error, msg ->
+            if (error == null)
+                contract?.tokenRefreshed()
+        }
+    }
+
 }

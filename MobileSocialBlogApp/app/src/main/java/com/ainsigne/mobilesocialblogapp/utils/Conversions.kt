@@ -271,6 +271,7 @@ class Conversions {
                     }
                     value?.let { session.id = it["id"] as? String }
                     value?.let { session.author = it["author"] as? String }
+                    value?.let { session.recipient = it["recipient"] as? String }
                     value?.let { session.message = it["message"] as? String }
                     value?.let { session.timestamp = it["timestamp"] as? String }
                     value?.let { session.userIds = it["userIds"] as? ArrayList<String> }
@@ -294,6 +295,7 @@ class Conversions {
                     session.id = value["id"] as? String
                     session.author = value["author"] as? String
                     session.message = value["title"] as? String
+                    session.recipient = value["recipient"] as? String
                     session.timestamp = value["timestamp"] as? String
                     session.userIds = value["userIds"] as? ArrayList<String>?
 
@@ -343,7 +345,7 @@ class Conversions {
                     message.author = value["author"] as? String
                     message.message = value["message"] as? String
                     message.timestamp = value["timestamp"] as? String
-                    message.timestamp_from = value["timestamp"] as? String
+                    message.timestamp_from = value["timestamp_from"] as? String
                     message.userId = value["userId"] as? String
                     message.replyTo = value["replyTo"] as? String
                     message.msgId = value["msgId"] as? Int

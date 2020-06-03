@@ -41,8 +41,20 @@ class ChatSessionsAdapter(chats_ : List<ChatSession>, view_ : ChatView) : Recycl
         val feedView = feedView_
         fun bind(chat : ChatSession) {
 
-            feedView.tv_chatfriend_location.text = Config.user?.location
-            feedView.tv_chatfriend_username.text = chat.author
+            feedView.tv_chatfriend_text.text = chat.message
+            if(chat.author != Config.getUser()) {
+                chat.author?.let { author ->
+                    Glide.with(feedView.context).load(adapterView.userFrom(author)?.photoUrl).into(feedView.iv_chatfriend_icon)
+                }
+                feedView.tv_chatfriend_username.text = chat.author
+            }
+            else{
+                chat.recipient?.let { recipient ->
+                    Glide.with(feedView.context).load(adapterView.userFrom(recipient)?.photoUrl).into(feedView.iv_chatfriend_icon)
+                }
+                feedView.tv_chatfriend_username.text = chat.recipient
+            }
+
 
             feedView.tv_chatfriend_timestamp.text = chat.timestamp?.toDate()?.fromNow()
 
@@ -52,13 +64,11 @@ class ChatSessionsAdapter(chats_ : List<ChatSession>, view_ : ChatView) : Recycl
                 adapterView.currentUser()?.id?.let {id ->
                     chat.userIds?.filter { it != id }?.let {filtered ->
                         if(filtered.isNotEmpty())
-                            adapterView.navigateToSession(filtered[0])
+                            adapterView.navigateToSession(filtered.first())
                     }
                 }
             }
-            chat.author?.let { author ->
-                Glide.with(feedView.context).load(adapterView.userFrom(author)?.photoUrl).into(feedView.iv_chatfriend_icon)
-            }
+
 
         }
     }

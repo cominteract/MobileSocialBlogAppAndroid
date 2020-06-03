@@ -7,6 +7,8 @@ import com.ainsigne.mobilesocialblogapp.ui.main.MainActivity
 class Config {
     companion object{
         val username_key = "username"
+        val userid_key = "userid"
+        val token_key = "tokenString"
         val online_key = "online"
         val ref_feed_key = "reffeed"
         val ref_chat_key = "refchat"
@@ -26,6 +28,40 @@ class Config {
             editor.putString(username_key,value)
             editor.apply()
         }
+
+        fun updateUserId(value : String)
+        {
+            var pref = (PreferenceManager
+                .getDefaultSharedPreferences(context))
+            val editor = pref!!.edit()
+            editor.putString(userid_key,value)
+            editor.apply()
+        }
+
+        fun updateToken(value : String)
+        {
+            var pref = (PreferenceManager
+                .getDefaultSharedPreferences(context))
+            val editor = pref!!.edit()
+            editor.putString(token_key,value)
+            editor.apply()
+        }
+
+        fun getUserId() : String?
+        {
+            var pref = (PreferenceManager
+                .getDefaultSharedPreferences(context))
+            return pref.getString(userid_key,null)
+        }
+
+        fun getToken() : String?
+        {
+            var pref = (PreferenceManager
+                .getDefaultSharedPreferences(context))
+            return pref.getString(token_key,null)
+        }
+
+
 
         fun getUser() : String?
         {

@@ -27,6 +27,7 @@ interface ChatSessionView {
     fun retrievedAllUpdateView()
     fun currentUser() : Users?
     fun userFrom(author : String) : Users?
+
 }
 
 /**
@@ -54,6 +55,7 @@ interface ChatSessionPresenter {
     fun retrieveCalls(userId : String)
     fun retrieveAll()
     fun getUserFrom(username : String) : Users?
+    fun getUserFromId(userId : String) : Users?
 }
 
 
@@ -138,6 +140,7 @@ class ChatSessionPresenterImplementation(
         }
         session.message = message
         session.author = user.username
+        session.recipient = getUserFromId(chatId)?.username
         session.timestamp = Date().toStringFormat()
         sendSession(session)
     }
@@ -163,6 +166,10 @@ class ChatSessionPresenterImplementation(
 
     override fun getUserFrom(username: String): Users? {
         return service.getUserFrom(username)
+    }
+
+    override fun getUserFromId(userId: String): Users? {
+        return service.getUserFromId(userId)
     }
 
     var view: ChatSessionView

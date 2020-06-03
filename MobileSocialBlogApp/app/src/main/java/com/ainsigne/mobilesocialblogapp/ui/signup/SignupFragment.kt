@@ -74,9 +74,12 @@ class SignupFragment : BaseFragment(), SignupView {
             presenter?.let {
                 if(it.usernameExists(username) && it.passwordCorrect(username,password)){
                     Config.updateUser(username)
+
                     it.getUserFrom(username)?.let {letUser ->
                         user = letUser
-
+                        user?.id?.let {
+                            Config.updateUserId(it)
+                        }
                         user?.online?.let {online ->
                                 when(online){
                                     !online && (letUser.birthday == null
@@ -114,11 +117,19 @@ class SignupFragment : BaseFragment(), SignupView {
                     signupUser.username = username
                     signupUser.password = password
                     Config.updateUser(username)
+                    signupUser.id?.let {
+                        Config.updateUserId(it)
+                    }
+
                     presenter?.signupUser(signupUser)
                 }
 
             }
         }
+    }
+
+    override fun tokenUpdatedView() {
+        Log.d(" Success updated token "," Success updated token ")
     }
 
     override fun retrievedAllUpdateView() {
@@ -137,6 +148,8 @@ class SignupFragment : BaseFragment(), SignupView {
             } }
         }
     }
+
+
 
     fun isSame() : Boolean {
         return et_signup_confirmpassword.text.toString().toLowerCase() == et_signup_password.text.toString().toLowerCase()

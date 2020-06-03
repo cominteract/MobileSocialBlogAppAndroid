@@ -19,7 +19,7 @@ buildscript {
 allprojects {
     repositories {
         maven { url 'https://jitpack.io' }
-        maven { url "file:/Users/andreinsigne/Documents/JitsiRepo/AndroidRepo/repo" }
+        maven { url "D:/androidprojects/AndroidRepo/repo" }
         google()
         jcenter()
         

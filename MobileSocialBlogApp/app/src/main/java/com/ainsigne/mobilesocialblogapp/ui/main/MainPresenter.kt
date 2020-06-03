@@ -1,6 +1,7 @@
 package com.ainsigne.mobilesocialblogapp.ui.main
 
 
+import android.util.Log
 import com.ainsigne.mobilesocialblogapp.manager.APIManager
 import com.ainsigne.mobilesocialblogapp.manager.AuthManager
 
@@ -10,6 +11,7 @@ import com.ainsigne.mobilesocialblogapp.manager.AuthManager
  **/
 interface MainView {
     fun tokenRefreshedUpdateView()
+    fun tokenDeletedUpdateView()
 }
 
 /**
@@ -18,6 +20,7 @@ interface MainView {
 interface MainContract {
     fun isLogged() : Boolean
     fun tokenRefreshed()
+    fun tokenDeleted()
 }
 
 /**
@@ -26,6 +29,7 @@ interface MainContract {
 interface MainPresenter {
     fun isLogged() : Boolean
     fun refreshToken()
+    fun deleteToken()
 }
 
 
@@ -56,10 +60,19 @@ class MainPresenterImplementation(
     }
 
     override fun refreshToken() {
-
+        Log.d(" Refreshing token "," Refreshing token ")
+        service.retrieveTokens()
     }
 
+    override fun deleteToken() {
+        service.deleteTokens()
+    }
     override fun tokenRefreshed(){
         view.tokenRefreshedUpdateView()
+    }
+
+
+    override fun tokenDeleted() {
+        view.tokenDeletedUpdateView()
     }
 }

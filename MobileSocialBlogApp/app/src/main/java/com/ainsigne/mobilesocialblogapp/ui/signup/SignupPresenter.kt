@@ -12,6 +12,7 @@ import com.ainsigne.mobilesocialblogapp.models.Users
 interface SignupView {
     fun addedUserUpdateView()
     fun retrievedAllUpdateView()
+    fun tokenUpdatedView()
 }
 
 /**
@@ -20,6 +21,7 @@ interface SignupView {
 interface SignupContract {
     fun addedUser()
     fun retrievedAll()
+    fun tokenUpdated()
 }
 
 /**
@@ -31,6 +33,7 @@ interface SignupPresenter {
     fun usernameExists(username : String): Boolean
     fun retrieveAll()
     fun getUserFrom(username : String) : Users?
+    fun retrieveTokens()
 }
 
 
@@ -42,6 +45,13 @@ class SignupPresenterImplementation(
     authManager: AuthManager
 ) : SignupPresenter, SignupContract {
 
+    override fun tokenUpdated() {
+        view.tokenUpdatedView()
+    }
+
+    override fun retrieveTokens() {
+        service.retrieveTokens()
+    }
 
     override fun retrievedAll() {
         view.retrievedAllUpdateView()
