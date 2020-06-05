@@ -78,7 +78,8 @@ class CommentsAdapter(comments_ : List<Comments>, post_ : Posts, view_ : FeedDet
             var commentMessage = "${comment.message}"
             feedView.tv_comment_message.text = commentMessage
             comment.replyTo?.let { replyTo ->
-                comments.first { replyTo == it.id }.author?.let { author ->
+                val commentFirst = comments.filter { replyTo == it.id }.firstOrNull()
+                commentFirst?.author?.let { author ->
                     val spannable = SpannableString("@${author} $commentMessage")
 
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
