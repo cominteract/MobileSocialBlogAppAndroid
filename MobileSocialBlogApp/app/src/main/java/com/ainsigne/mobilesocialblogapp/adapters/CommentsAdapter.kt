@@ -132,7 +132,7 @@ class CommentsAdapter(comments_ : List<Comments>, post_ : Posts, view_ : FeedDet
     override fun onBindViewHolder(holder: FeedDataHolder, position: Int) {
         if(holder.itemViewType == headerView)
             holder.bind(post)
-        else
+        else if(position > 0)
             holder.bind(comments[position - 1])
     }
 }
